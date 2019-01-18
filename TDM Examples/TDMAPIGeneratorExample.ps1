@@ -1,7 +1,7 @@
 
 #*****************************************************************
 #
-#   Script Name:  TDMAPIExample.ps1
+#   Script Name:  TDMAPIGeneratorExample.ps1
 #   Version:  1.0
 #   Author:  Keith Puzey 
 #   Date:  January 08,  2019
@@ -11,7 +11,7 @@
 #
 #*****************************************************************
 
-#  Example -   powershell -file TDMAPIExample.ps1 -username administrator -password marmite -url http://10.130.127.71:8080 -ProjectName "Web Store Application" -Version 22 -Environment QA
+#  Example -   powershell -file TDMAPIExample.ps1 -username administrator -password marmite -url http://10.130.127.71:8080 -ProjectName "Web Store Application" -Version 22 -Environment QA -jsonfile c:\Demo\GenBody.json
 
 # Define Parameters
 param(
@@ -20,6 +20,7 @@ param(
    [string]$ProjectName,
    [string]$Version,
    [string]$Environment,
+   [string]$jsonfile,
    [string]$password
   )
 # URL Definitions - API Documentation - https://docops.ca.com/ca-test-data-manager/4-7/en/reference/rest-api-reference/api-services-reference
@@ -149,7 +150,7 @@ $headersg = New-Object "System.Collections.Generic.Dictionary[[String],[String]]
 $headersg.Add("Authorization",$token)
 $headersg.Add("Content-Type",'application/json')
 
-$GenBody = Get-Content C:\Demo\GenBody2.json -Raw
+$GenBody = Get-Content $jsonfile -Raw
  
 $Generatorurl="${url}/TDMJobService/api/ca/v1/jobs"
 try {
