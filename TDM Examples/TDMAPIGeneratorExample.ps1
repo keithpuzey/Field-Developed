@@ -11,7 +11,7 @@
 #
 #*****************************************************************
 
-#  Example -   powershell -file TDMAPIExample.ps1 -username administrator -password marmite -url http://10.130.127.71:8080 -ProjectName "Web Store Application" -Version 22 -Environment QA -jsonfile c:\Demo\GenBody.json
+#  Example -   powershell -file TDMAPIGeneratorExample.ps1 -username administrator -password marmite -url http://10.130.127.71:8080 -ProjectName "Web Store Application" -Version 22 -jsonfile c:\Demo\GenBody.json
 
 # Define Parameters
 param(
@@ -90,61 +90,7 @@ catch [System.Net.WebException] {
 $versionID=($versionresponse | where {$_.name -eq $Version})
 $VersionID=$versionID.id
 
-# Query TDM to return all envitronments for the selected project / version
-
-$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization",$token)
-$headers.Add("ContentType",'application/json')
-
-$EnvBody = @{"projectId"="$ProjectID";
- "versionId"="$VersionID";
- }
- 
- try {
-    $environmentresponse=Invoke-RestMethod -Method 'Get' -Uri $environmenturl -Headers $headers -Body $EnvBody
-}
-catch [System.Net.WebException] { 
-    Write-Verbose "An exception was caught: $($_.Exception.Message)"
-    $_.Exception.Response 
-} 
-#  Extract EnvironmentID for Project / Version / Environment name specified on CLI
-$environmentid=($environmentresponse.elements | where {$_.name -eq $Environment})
-$environmentID=$environmentid.id
-
-
-$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
-$headers.Add("Authorization",$token)
-$headers.Add("ContentType",'application/json')
-
-$EnvBody = @{"projectId"="$ProjectID";
- "versionId"="$VersionID";
-}
-$environmentdetailurl="${url}/TDMDataReservationService/api/ca/v1/environments/$environmentID" 
- try {
-    $environmentdetailresponse=Invoke-RestMethod -Method 'Get' -Uri $environmentdetailurl -Headers $headers -Body $EnvBody
-}
-catch [System.Net.WebException] { 
-    Write-Verbose "An exception was caught: $($_.Exception.Message)"
-    $_.Exception.Response 
-} 
-
-
-# Un comment the following section to output responses
-# write-host Project Table
-# write-output $projectresponse | Sort-Object -Property name| Format-Table 
-# write-host Version Table for project ${ProjectName}
-# write-output  $versionresponse | Sort-Object -Property name| Format-Table 
-# write-host Environment Table ${ProjectName} / Version  $Version
-# write-output $environmentresponse.elements | Sort-Object -Property name| Format-Table 
-
-#  Output ID's
-"`n"
-Write-Host -NoNewline "Project ID for Project name  ${ProjectName} is" $ProjectID
-"`n"
-Write-Host -NoNewline "Version ID for Version ${Version} is" $VersionID
-"`n"
-Write-Host -NoNewline "Environment ID for Environment ${Environment} is" $environmentID
-"`n"
+# Submit Publish Job, Paylod is read from corresponding json file
 
 $headersg = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headersg.Add("Authorization",$token)
