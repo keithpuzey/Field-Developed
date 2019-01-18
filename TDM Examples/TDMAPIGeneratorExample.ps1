@@ -4,14 +4,14 @@
 #   Script Name:  TDMAPIGeneratorExample.ps1
 #   Version:  1.0
 #   Author:  Keith Puzey 
-#   Date:  January 08,  2019
+#   Date:  January 18,  2019
 #
 #   Description:  Example Powershell script to interact with CA TDM API and initiate a Generator job
 #   
 #
 #*****************************************************************
 
-#  Example -   powershell -file TDMAPIGeneratorExample.ps1 -username administrator -password marmite -url http://10.130.127.71:8080 -ProjectName "Web Store Application" -Version 22 -jsonfile c:\Demo\GenBody.json
+#  Example -   powershell -file TDMAPIGeneratorExample.ps1 -username administrator -password marmite -url http://10.130.127.71:8080 -ProjectName "Web Store Application" -Version 22 -jsonfile GenBody.json
 
 # Define Parameters
 param(
