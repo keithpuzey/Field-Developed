@@ -34,6 +34,25 @@ param(
  $EncodedText = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("$stringtoencode"))
  $Auth="Basic ${EncodedText}"
 
+# Ignore Certificates when using SSL Connection string
+
+$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+$headers.Add("Authorization",$Auth)
+$headers.Add("ContentType",'application/json')
+add-type @"
+    using System.Net;
+    using System.Security.Cryptography.X509Certificates;
+    public class TrustAllCertsPolicy : ICertificatePolicy {
+        public bool CheckValidationResult(
+            ServicePoint srvPoint, X509Certificate certificate,
+            WebRequest request, int certificateProblem) {
+            return true;
+        }
+    }
+"@
+ [System.Net.ServicePointManager]::CertificatePolicy = New-Object TrustAllCertsPolicy
+ [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
+ 
 # Use Base64 encoded string to generate authorization token
 
 $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
