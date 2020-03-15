@@ -41,7 +41,7 @@
           <stringProp name="SMTPSampler.plainBody">false</stringProp>
           <stringProp name="SMTPSampler.attachFile"></stringProp>
           <stringProp name="SMTPSampler.useSSL">false</stringProp>
-          <stringProp name="SMTPSampler.useStartTLS">true</stringProp>
+          <stringProp name="SMTPSampler.useStartTLS">false</stringProp>
           <stringProp name="SMTPSampler.trustAllCerts">false</stringProp>
           <stringProp name="SMTPSampler.enforceStartTLS">false</stringProp>
           <stringProp name="SMTPSampler.useLocalTrustStore">false</stringProp>
