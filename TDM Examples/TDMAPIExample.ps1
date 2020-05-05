@@ -2,16 +2,16 @@
 #*****************************************************************
 #
 #   Script Name:  TDMAPIExample.ps1
-#   Version:  1.0
+#   Version:  2.0
 #   Author:  Keith Puzey 
-#   Date:  January 08,  2019
+#   Date:  May 05,  2020
 #
 #   Description:  Example Powershell script to interact with CA TDM API
 #   
 #
 #*****************************************************************
 
-#  Example -   powershell -file TDMAPIExample.ps1 -username administrator -password marmite -url http://10.130.127.71:8080 -ProjectName "Web Store Application" -Version 22 -Environment QA
+#  Example -   powershell -file TDMAPIExample.ps1 -username administrator -password marmite -url http://127.0.0.1:8080 -ProjectName "Web Store Application" -Version 22 -Environment QA -Generator Test -TableName COUNTRY_CODES
 
 # Define Parameters
 param(
@@ -20,13 +20,16 @@ param(
    [string]$ProjectName,
    [string]$Version,
    [string]$Environment,
-   [string]$password
+   [string]$password,
+   [string]$Generator,
+   [string]$TableName
   )
 # URL Definitions - API Documentation - https://docops.ca.com/ca-test-data-manager/4-7/en/reference/rest-api-reference/api-services-reference
 # 
  $authurl="${url}/TestDataManager/user/login"
  $projecturl="${url}/TDMProjectService/api/ca/v1/projects"
  $environmenturl="${url}/TDMDataReservationService/api/ca/v1/environments"
+ $generatorurl="${url}/TDMGeneratorService/api/ca/v1/generators"
  
 # Convert username and password (username:password) to Base64
   
@@ -126,6 +129,7 @@ catch [System.Net.WebException] {
     $_.Exception.Response 
 } 
 #  Extract EnvironmentID for Project / Version / Environment name specified on CLI
+
 $environmentid=($environmentresponse.elements | where {$_.name -eq $Environment})
 $environmentID=$environmentid.id
 
@@ -147,13 +151,45 @@ catch [System.Net.WebException] {
 } 
 
 
-# Un comment the following section to output responses
-# write-host Project Table
-# write-output $projectresponse | Sort-Object -Property name| Format-Table 
-# write-host Version Table for project ${ProjectName}
-# write-output  $versionresponse | Sort-Object -Property name| Format-Table 
-# write-host Environment Table ${ProjectName} / Version  $Version
-# write-output $environmentresponse.elements | Sort-Object -Property name| Format-Table 
+# Query TDM to return all Generators for the selected project / version
+
+$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+$headers.Add("Authorization",$token)
+$headers.Add("ContentType",'application/json')
+
+$EnvBody = @{"projectId"="$ProjectID";
+ "versionId"="$VersionID";
+ }
+ 
+ try {
+    $generatorresponse=Invoke-RestMethod -Method 'Get' -Uri $generatorurl -Headers $headers -Body $EnvBody
+}
+catch [System.Net.WebException] { 
+    Write-Verbose "An exception was caught: $($_.Exception.Message)"
+    $_.Exception.Response 
+} 
+
+#  Extract generatorID for Project / Version / Generator name specified on CLI
+
+$genid=($generatorresponse.elements | where {$_.name -eq $Generator})
+$generatorID=$genid.generatorId
+
+# Query TDM to return all Tables for the selected project / version / Generator
+
+$generatortableurl="${generatorurl}/${generatorID}/tables"
+ 
+ try {
+    $generatortableresponse=Invoke-RestMethod -Method 'Get' -Uri $generatortableurl -Headers $headers -Body $EnvBody
+}
+catch [System.Net.WebException] { 
+    Write-Verbose "An exception was caught: $($_.Exception.Message)"
+    $_.Exception.Response 
+} 
+
+#  Extract tableID for Project / Version / Generator / table specified on CLI
+
+$tableid=($generatortableresponse.tables | where {$_.name -eq $TableName})
+$tableID=$tableid.tableId
 
 #  Output ID's
 "`n"
@@ -163,3 +199,22 @@ Write-Host -NoNewline "Version ID for Version ${Version} is" $VersionID
 "`n"
 Write-Host -NoNewline "Environment ID for Environment ${Environment} is" $environmentID
 "`n"
+Write-Host -NoNewline "Generator ID for Generator ${Generator} is" $generatorID
+"`n"
+Write-Host -NoNewline "Table ID for Table ${Generator} is" $tableID
+"`n"
+
+
+# Debugging section  -  Un comment the following section to view response outputs when debugging
+
+# write-host Project Table
+# write-output $projectresponse | Sort-Object -Property name| Format-Table 
+# write-host Version Table for project ${ProjectName}
+# write-output  $versionresponse | Sort-Object -Property name| Format-Table 
+# write-host Environment Table ${ProjectName} / Version  $Version
+# write-output $environmentresponse.elements | Sort-Object -Property name| Format-Table 
+# write-output $generatorresponse.elements | Sort-Object -Property name| Format-Table 
+# write-output $generatortableresponse.tables | Sort-Object -Property name| Format-Table 
+
+
+
