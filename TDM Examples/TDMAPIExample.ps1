@@ -201,7 +201,7 @@ Write-Host -NoNewline "Environment ID for Environment ${Environment} is" $enviro
 "`n"
 Write-Host -NoNewline "Generator ID for Generator ${Generator} is" $generatorID
 "`n"
-Write-Host -NoNewline "Table ID for Table ${Generator} is" $tableID
+Write-Host -NoNewline "Table ID for Table ${TableName} is" $tableID
 "`n"
 
 
