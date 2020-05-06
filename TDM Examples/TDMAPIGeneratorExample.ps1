@@ -2,16 +2,16 @@
 #*****************************************************************
 #
 #   Script Name:  TDMAPIGeneratorExample.ps1
-#   Version:  1.0
+#   Version:  1.1
 #   Author:  Keith Puzey 
-#   Date:  January 18,  2019
+#   Date:  May 6th ,  2020
 #
 #   Description:  Example Powershell script to interact with CA TDM API and initiate a Generator job
 #   
 #
 #*****************************************************************
 
-#  Example -   powershell -file TDMAPIGeneratorExample.ps1 -username administrator -password marmite -url http://10.130.127.71:8080 -ProjectName "Web Store Application" -Version 22 -jsonfile GenBody.json
+#  Example -   powershell -file TDMAPIGeneratorExample.ps1 -username administrator -password marmite -url http://127.0.0.1:8080 -ProjectName "Web Store Application" -Version 22 -jsonfile GenBody.json
 
 # Define Parameters
 param(
@@ -90,7 +90,8 @@ catch [System.Net.WebException] {
 
 $projectID=($projectresponse | where {$_.name -eq $ProjectName})
 $ProjectID=$projectID.id
-
+if (!$ProjectID) { Write-Host "Project Name Not Found" } 
+else {
 
 # Query TDM to return all versions for the selected project
 
@@ -109,6 +110,8 @@ catch [System.Net.WebException] {
 #  Extract VersionID for Project / Version name specified on CLI
 $versionID=($versionresponse | where {$_.name -eq $Version})
 $VersionID=$versionID.id
+if (!$VersionID) { Write-Host "Version Not Found" } 
+else {
 
 # Submit Publish Job, Paylod is read from corresponding json file
 
@@ -125,6 +128,6 @@ try {
 catch [System.Net.WebException] { 
    Write-Verbose "An exception was caught: $($_.Exception.Message)"
    $_.Exception.Response 
-} 
- 
- 
+  } 
+ }
+}
