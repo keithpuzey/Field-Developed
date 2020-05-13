@@ -1,10 +1,9 @@
-
-#*****************************************************************
+# *****************************************************************
 #
 #   Script Name:  TDMAPIGeneratorExample.ps1
-#   Version:  1.1
+#   Version:  1.2
 #   Author:  Keith Puzey 
-#   Date:  May 6th ,  2020
+#   Date:  May 13th ,  2020
 #
 #   Description:  Example Powershell script to interact with CA TDM API and initiate a Generator job
 #   
@@ -123,11 +122,26 @@ $GenBody = Get-Content $jsonfile -Raw
  
 $Generatorurl="${url}/TDMJobService/api/ca/v1/jobs"
 try {
- Invoke-RestMethod -Method 'Post' -Uri $Generatorurl -Headers $headersg -Body $GenBody
+ $jobresponse= Invoke-RestMethod -Method 'Post' -Uri $Generatorurl -Headers $headersg -Body $GenBody
 }
 catch [System.Net.WebException] { 
    Write-Verbose "An exception was caught: $($_.Exception.Message)"
    $_.Exception.Response 
   } 
+$jobID=$jobresponse.jobId
+Write-Host "Submitted Job ID = " $jobID
+
+
+$Joburl="${url}/TDMJobService/api/ca/v1/job/" + $jobID
+
+try {
+ $jobstatusresponse= Invoke-RestMethod -Method 'Get' -Uri $Joburl -Headers $headersg 
+}
+catch [System.Net.WebException] { 
+   Write-Verbose "An exception was caught: $($_.Exception.Message)"
+   $_.Exception.Response 
+  }
+Write-Host "Job Status = " $jobstatusresponse.status
+
  }
 }
