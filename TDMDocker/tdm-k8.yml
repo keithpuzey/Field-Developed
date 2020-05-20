@@ -1,0 +1,277 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kompose.cmd: kompose-windows-amd64.exe convert -f docker-compose-tdm.yml -o
+        tdm-k8.yaml
+      kompose.version: 1.21.0 (992df58d8)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: tdmweb
+    name: tdmweb
+  spec:
+    ports:
+    - name: "8443"
+      port: 8443
+      targetPort: 8443
+    selector:
+      io.kompose.service: tdmweb
+  status:
+    loadBalancer: {}
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      kompose.cmd: kompose-windows-amd64.exe convert -f docker-compose-tdm.yml -o
+        tdm-k8.yaml
+      kompose.version: 1.21.0 (992df58d8)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: orientdb
+    name: orientdb
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        io.kompose.service: orientdb
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          kompose.cmd: kompose-windows-amd64.exe convert -f docker-compose-tdm.yml
+            -o tdm-k8.yaml
+          kompose.version: 1.21.0 (992df58d8)
+        creationTimestamp: null
+        labels:
+          io.kompose.network/tdm_default: "true"
+          io.kompose.service: orientdb
+      spec:
+        containers:
+        - env:
+          - name: ORIENTDB_ROOT_PASSWORD
+            value: '{cry}tHpzgrvNhtVu6uHGNd9EdlAuwMR30OL0sAXhBWdgM3Md'
+          image: tdm/orientdb:2.2.33
+          imagePullPolicy: ""
+          name: orientdb
+          resources: {}
+          volumeMounts:
+          - mountPath: /orientdb/backup
+            name: orientdb-backup
+          - mountPath: /orientdb/config
+            name: orientdb-config
+          - mountPath: /orientdb/databases
+            name: orientdb-databases
+        hostname: orientdb
+        restartPolicy: Always
+        serviceAccountName: ""
+        volumes:
+        - name: orientdb-backup
+          persistentVolumeClaim:
+            claimName: orientdb-backup
+        - name: orientdb-config
+          persistentVolumeClaim:
+            claimName: orientdb-config
+        - name: orientdb-databases
+          persistentVolumeClaim:
+            claimName: orientdb-databases
+  status: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    creationTimestamp: null
+    labels:
+      io.kompose.service: orientdb-backup
+    name: orientdb-backup
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 100Mi
+  status: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    creationTimestamp: null
+    labels:
+      io.kompose.service: orientdb-config
+    name: orientdb-config
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 100Mi
+  status: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    creationTimestamp: null
+    labels:
+      io.kompose.service: orientdb-databases
+    name: orientdb-databases
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 100Mi
+  status: {}
+- apiVersion: extensions/v1beta1
+  kind: NetworkPolicy
+  metadata:
+    creationTimestamp: null
+    name: tdm_default
+  spec:
+    ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            io.kompose.network/tdm_default: "true"
+    podSelector:
+      matchLabels:
+        io.kompose.network/tdm_default: "true"
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      kompose.cmd: kompose-windows-amd64.exe convert -f docker-compose-tdm.yml -o
+        tdm-k8.yaml
+      kompose.version: 1.21.0 (992df58d8)
+    creationTimestamp: null
+    labels:
+      io.kompose.service: tdmweb
+    name: tdmweb
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        io.kompose.service: tdmweb
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        annotations:
+          kompose.cmd: kompose-windows-amd64.exe convert -f docker-compose-tdm.yml
+            -o tdm-k8.yaml
+          kompose.version: 1.21.0 (992df58d8)
+        creationTimestamp: null
+        labels:
+          io.kompose.network/tdm_default: "true"
+          io.kompose.service: tdmweb
+      spec:
+        containers:
+        - env:
+          - name: APPLICATION_PROP
+            value: tdmweb.TDMMaskingService.taskTimeout=30|tdmweb.profiling.uncommitted.reads=true|tdmweb.profiling.query.timeout=300
+          - name: GTREP_DATABASE
+            value: gtrep
+          - name: GTREP_DB_TYPE
+            value: sqlserver
+          - name: GTREP_HOST
+            value: 34.68.217.83
+          - name: GTREP_PASSWORD
+            value: CAdemo123
+          - name: GTREP_PORT
+            value: "1433"
+          - name: GTREP_USER
+            value: sa
+          - name: MESSAGING_PASS
+            value: '{cry}1hY5pZrm87PWjgPdmypDbVZnL4a108lxy8YLuUVRMCr8'
+          - name: MESSAGING_PORT
+            value: "5671"
+          - name: MESSAGING_SERVER
+            value: messaging
+          - name: MESSAGING_USER
+            value: Admin
+          - name: ORIENTDB_PASSWORD
+            value: '{cry}tHpzgrvNhtVu6uHGNd9EdlAuwMR30OL0sAXhBWdgM3Md'
+          image: tdm/tdmweb:4.9.0.12
+          imagePullPolicy: ""
+          name: tdmweb
+          ports:
+          - containerPort: 8443
+          resources: {}
+          volumeMounts:
+          - mountPath: /mnt/logs
+            name: tdmweb-logs
+          - mountPath: /mnt/storage
+            name: tdmweb-storage
+          - mountPath: /mnt/fdmconfig
+            name: tdmweb-fdmconfig
+        hostname: tdmweb
+        restartPolicy: Always
+        serviceAccountName: ""
+        volumes:
+        - name: tdmweb-logs
+          persistentVolumeClaim:
+            claimName: tdmweb-logs
+        - name: tdmweb-storage
+          persistentVolumeClaim:
+            claimName: tdmweb-storage
+        - name: tdmweb-fdmconfig
+          persistentVolumeClaim:
+            claimName: tdmweb-fdmconfig
+  status: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    creationTimestamp: null
+    labels:
+      io.kompose.service: tdmweb-logs
+    name: tdmweb-logs
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 100Mi
+  status: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    creationTimestamp: null
+    labels:
+      io.kompose.service: tdmweb-storage
+    name: tdmweb-storage
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 100Mi
+  status: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    creationTimestamp: null
+    labels:
+      io.kompose.service: tdmweb-fdmconfig
+    name: tdmweb-fdmconfig
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 100Mi
+  status: {}
+- apiVersion: extensions/v1beta1
+  kind: NetworkPolicy
+  metadata:
+    creationTimestamp: null
+    name: tdm_default
+  spec:
+    ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            io.kompose.network/tdm_default: "true"
+    podSelector:
+      matchLabels:
+        io.kompose.network/tdm_default: "true"
+kind: List
+metadata: {}
+
