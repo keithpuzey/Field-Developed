@@ -1,0 +1,61 @@
+version: '3.5'
+
+networks:
+  default:
+    name: tdm_default
+services:
+  orientdb:
+    image: tdm/orientdb:2.2.33
+    hostname: orientdb
+    environment:
+      #- 'ORIENTDB_ROOT_PASSWORD=marmite'
+      - 'ORIENTDB_ROOT_PASSWORD={cry}tHpzgrvNhtVu6uHGNd9EdlAuwMR30OL0sAXhBWdgM3Md'
+    volumes:
+      - 'orientdb_backup:/orientdb/backup'
+      - 'orientdb_config:/orientdb/config'
+      - 'orientdb_databases:/orientdb/databases'
+  tdmweb:
+    image: tdm/tdmweb:4.9.0.12
+    hostname: tdmweb
+    environment:
+      # Customise connection to an external gtrep
+      - 'GTREP_HOST=34.68.217.83'
+      - 'GTREP_PORT=1433'
+      - 'GTREP_USER=sa'
+      - 'GTREP_PASSWORD=CAdemo123'
+      # Default values for Oracle are:
+      #- 'GTREP_DB_TYPE=oracle'
+      #- 'GTREP_SERVICE_NAME=orcl'
+      # Default values for SQL Server are:
+      - 'GTREP_DB_TYPE=sqlserver'
+      - 'GTREP_DATABASE=gtrep'
+      #- 'ORIENTDB_PASSWORD=marmite'
+      - 'ORIENTDB_PASSWORD={cry}tHpzgrvNhtVu6uHGNd9EdlAuwMR30OL0sAXhBWdgM3Md'
+      # Make sure the MESSAGING_* properties define connection to the actual TDM Messaging Service
+      # or are commented out, if no scalable masking is needed.
+      - 'MESSAGING_SERVER=messaging'
+      - 'MESSAGING_PORT=5671'
+      # Specify your messaging credentials here
+      # These values should match the credentials which have been specified
+      # in the docker-compose-messaging.yml file. These are the user credentials
+      # that the masking service will use to connect to the message broker.
+      - 'MESSAGING_USER=Admin'
+      - 'MESSAGING_PASS={cry}1hY5pZrm87PWjgPdmypDbVZnL4a108lxy8YLuUVRMCr8'
+      - 'APPLICATION_PROP=tdmweb.TDMMaskingService.taskTimeout=30|tdmweb.profiling.uncommitted.reads=true|tdmweb.profiling.query.timeout=300'
+    depends_on:
+      - orientdb
+    ports:
+      # - '8080:8080'
+      - '8443:8443'
+    volumes:
+      # Volume to contain updated fdm-config.xml file
+      - 'tdmweb_logs:/mnt/logs'
+      - 'tdmweb_storage:/mnt/storage'
+      - 'tdmweb_fdmconfig:/mnt/fdmconfig'
+volumes:
+  orientdb_backup:
+  orientdb_config:
+  orientdb_databases:
+  tdmweb_logs:
+  tdmweb_storage:
+  tdmweb_fdmconfig:
