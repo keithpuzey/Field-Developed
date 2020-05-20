@@ -53,7 +53,7 @@ items:
         - env:
           - name: ORIENTDB_ROOT_PASSWORD
             value: '{cry}tHpzgrvNhtVu6uHGNd9EdlAuwMR30OL0sAXhBWdgM3Md'
-          image: tdm/orientdb:2.2.33
+          image: gcr.io/demos-esd-ct/orientdb:2.2.33
           imagePullPolicy: ""
           name: orientdb
           resources: {}
@@ -189,7 +189,7 @@ items:
             value: Admin
           - name: ORIENTDB_PASSWORD
             value: '{cry}tHpzgrvNhtVu6uHGNd9EdlAuwMR30OL0sAXhBWdgM3Md'
-          image: tdm/tdmweb:4.9.0.12
+          image: gcr.io/demos-esd-ct/tdmweb:4.9.0.12
           imagePullPolicy: ""
           name: tdmweb
           ports:
