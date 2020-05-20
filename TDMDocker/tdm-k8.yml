@@ -46,7 +46,7 @@ items:
           kompose.version: 1.21.0 (992df58d8)
         creationTimestamp: null
         labels:
-          io.kompose.network/tdm_default: "true"
+          io.kompose.network/tdm-default: "true"
           io.kompose.service: orientdb
       spec:
         containers:
@@ -130,10 +130,10 @@ items:
     - from:
       - podSelector:
           matchLabels:
-            io.kompose.network/tdm_default: "true"
+            io.kompose.network/tdm-default: "true"
     podSelector:
       matchLabels:
-        io.kompose.network/tdm_default: "true"
+        io.kompose.network/tdm-default: "true"
 - apiVersion: apps/v1
   kind: Deployment
   metadata:
@@ -160,7 +160,7 @@ items:
           kompose.version: 1.21.0 (992df58d8)
         creationTimestamp: null
         labels:
-          io.kompose.network/tdm_default: "true"
+          io.kompose.network/tdm-default: "true"
           io.kompose.service: tdmweb
       spec:
         containers:
@@ -268,10 +268,10 @@ items:
     - from:
       - podSelector:
           matchLabels:
-            io.kompose.network/tdm_default: "true"
+            io.kompose.network/tdm-default: "true"
     podSelector:
       matchLabels:
-        io.kompose.network/tdm_default: "true"
+        io.kompose.network/tdm-default: "true"
 kind: List
 metadata: {}
 
