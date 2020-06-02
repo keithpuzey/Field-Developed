@@ -1,0 +1,231 @@
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tdmhost
+    name: tdmwebsvc
+  name: tdmwebsvc
+spec:
+  type: NodePort
+  ports:
+  - name: "8443"
+    port: 8443
+    targetPort: 8443
+  selector:
+    name: tdmwebsvc
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: tdmsvc
+  name: tdmcomponents
+spec:
+  clusterIP: None
+  ports:
+  - name: "2424"
+    port: 2424
+    targetPort: 2424
+  - name: "5671"
+    port: 5671
+    targetPort: 5671
+  selector:
+    name: tdmcomponents
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tdm-external-port
+spec:
+  selector:
+    name: tdmwebsvc
+  ports:
+    - port: 443
+      targetPort: 8443
+  type: LoadBalancer
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: orientdb
+  labels:
+    name: tdmcomponents
+spec:
+  hostname: orientdb
+  subdomain: tdmcomponents
+  containers:
+    - name: orientdb
+      image: gcr.io/demos-esd-ct/orientdb:2.2.33
+      env:
+        - name: ORIENTDB_ROOT_PASSWORD
+          value: '{cry}tHpzgrvNhtVu6uHGNd9EdlAuwMR30OL0sAXhBWdgM3Md'
+      volumeMounts:
+        - mountPath: /orientdb/backup
+          name: orientdb-backup
+        - mountPath: /orientdb/databases
+          name: orientdb-databases
+      ports:
+        - containerPort: 2424
+  volumes:
+    - name: orientdb-backup
+      persistentVolumeClaim:
+              claimName: orientdb-backup
+    - name: orientdb-databases
+      persistentVolumeClaim:
+              claimName: orientdb-databases
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: messaging
+  labels:
+    name: tdmcomponents
+spec:
+  hostname: messaging
+  subdomain: tdmcomponents
+  containers:
+    - name: messaging
+      image: gcr.io/demos-esd-ct/tdmmessaging:4.9.0.12
+      env:
+        - name: RABBITMQ_LOG_BASE
+          value: /var/log/rabbitmq/log
+        - name: RABBITMQ_LOGS
+          value: /var/log/rabbitmq/log/rabbitmq.log
+        - name: RABBITMQ_SASL_LOGS
+          value: /var/log/rabbitmq/log/rabbitmq_sasl.log
+        - name: DEFAULT_USER
+          value: Admin
+        - name: DEFAULT_PASS
+          value: '{cry}1hY5pZrm87PWjgPdmypDbVZnL4a108lxy8YLuUVRMCr8'
+        - name: RABBITMQ_SSL_CACERTFILE
+          value: /home/testca/cacert.pem
+        - name: RABBITMQ_SSL_CERTFILE
+          value: /home/server/cert.pem
+        - name: RABBITMQ_SSL_FAIL_IF_NO_PEER_CERT
+          value: "false"
+        - name: RABBITMQ_SSL_VERIFY
+          value: verify_none    
+        - name: RABBITMQ_SSL_KEYFILE
+          value: /home/server/key.pem
+      ports:
+        - containerPort: 5671
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tdmweb
+  labels:
+    name: tdmwebsvc
+spec:
+  hostname: tdmweb
+  subdomain: tdmwebsvc
+  containers:
+   - name: tdmweb
+     image: gcr.io/demos-esd-ct/tdmweb:4.9.0.12
+     volumeMounts:
+       - name: tdmweb-logs
+         mountPath: /mnt/logs
+       - name: tdmweb-storage
+         mountPath: mnt/storage
+       - name: tdmweb-fdmconfig
+         mountPath: /mnt/fdmconfig
+     ports:
+       - containerPort: 8443
+     env:
+       - name: APPLICATION_PROP
+         value: tdmweb.TDMMaskingService.taskTimeout=30|tdmweb.profiling.uncommitted.reads=true|tdmweb.profiling.query.timeout=300
+       - name: GTREP_DATABASE
+         value: gtrep-k8
+       - name: GTREP_DB_TYPE
+         value: sqlserver
+       - name: GTREP_HOST
+         value: 34.68.217.83
+       - name: GTREP_PASSWORD
+         value: CAdemo123
+       - name: GTREP_PORT
+         value: "1433"
+       - name: GTREP_USER
+         value: sa
+       - name: MESSAGING_PASS
+         value: '{cry}1hY5pZrm87PWjgPdmypDbVZnL4a108lxy8YLuUVRMCr8'
+       - name: MESSAGING_PORT
+         value: "5671"
+       - name: MESSAGING_SERVER
+         value: messaging.tdmcomponents
+       - name: MESSAGING_USER
+         value: Admin
+       - name: ORIENTDB_HOST
+         value: orientdb.tdmcomponents
+       - name: ORIENTDB_PASSWORD
+         value: '{cry}tHpzgrvNhtVu6uHGNd9EdlAuwMR30OL0sAXhBWdgM3Md'
+     livenessProbe:
+       httpGet:
+         path: /TestDataManager
+         port: 8443
+         scheme: HTTPS
+       initialDelaySeconds: 300
+       periodSeconds: 30
+  volumes:
+    - name: tdmweb-logs
+      persistentVolumeClaim:
+              claimName: tdmweb-logs
+    - name: tdmweb-storage
+      persistentVolumeClaim:
+              claimName: tdmweb-storage
+    - name: tdmweb-fdmconfig
+      persistentVolumeClaim:
+              claimName: tdmweb-fdmconfig
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: masking
+  labels:
+    name: tdmcomponents
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: tdmcomponents
+  template:
+    metadata:
+      labels:
+        name: tdmcomponents
+    spec:
+      hostname: masking
+      subdomain: tdmcomponents
+      containers:
+        - name: masking
+          image: gcr.io/demos-esd-ct/tdmmasking:4.9.0.12
+          env:
+            - name: MESSAGING_SERVER
+              value: messaging.tdmcomponents
+            - name: MESSAGING_PORT
+              value: "5671"
+            - name: MESSAGING_USER
+              value: Admin
+            - name: MESSAGING_PASS
+              value: '{cry}1hY5pZrm87PWjgPdmypDbVZnL4a108lxy8YLuUVRMCr8'
+          livenessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - 'cat /opt/tdm/logs/TDMMaskingService*.log | grep -vz "Connection refused"'
+            initialDelaySeconds: 10
+            periodSeconds: 15
+
