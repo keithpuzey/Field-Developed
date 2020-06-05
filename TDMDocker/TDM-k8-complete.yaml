@@ -1,4 +1,4 @@
-
+  
 apiVersion: v1
 kind: Service
 metadata:
@@ -61,7 +61,7 @@ spec:
   subdomain: tdmcomponents
   containers:
     - name: orientdb
-      image: gcr.io/demos-esd-ct/orientdb:2.2.33
+      image: gcr.io/demo-repo/orientdb:2.2.33
       env:
         - name: ORIENTDB_ROOT_PASSWORD
           value: '{cry}tHpzgrvNhtVu6uHGNd9EdlAuwMR30OL0sAXhBWdgM3Md'
@@ -93,7 +93,7 @@ spec:
   subdomain: tdmcomponents
   containers:
     - name: messaging
-      image: gcr.io/demos-esd-ct/tdmmessaging:4.9.0.12
+      image: gcr.io/demo-repo/tdmmessaging:4.9.0.12
       env:
         - name: RABBITMQ_LOG_BASE
           value: /var/log/rabbitmq/log
@@ -131,7 +131,7 @@ spec:
   subdomain: tdmwebsvc
   containers:
    - name: tdmweb
-     image: gcr.io/demos-esd-ct/tdmweb:4.9.0.12
+     image: gcr.io/demo-repo/tdmweb:4.9.0.12
      volumeMounts:
        - name: tdmweb-logs
          mountPath: /mnt/logs
@@ -145,13 +145,13 @@ spec:
        - name: APPLICATION_PROP
          value: tdmweb.TDMMaskingService.taskTimeout=30|tdmweb.profiling.uncommitted.reads=true|tdmweb.profiling.query.timeout=300
        - name: GTREP_DATABASE
-         value: gtrep-k8
+         value: gtrep
        - name: GTREP_DB_TYPE
          value: sqlserver
        - name: GTREP_HOST
-         value: 34.68.217.83
+         value: 10.10.1.125
        - name: GTREP_PASSWORD
-         value: CAdemo123
+         value: DB_Password
        - name: GTREP_PORT
          value: "1433"
        - name: GTREP_USER
@@ -209,7 +209,7 @@ spec:
       subdomain: tdmcomponents
       containers:
         - name: masking
-          image: gcr.io/demos-esd-ct/tdmmasking:4.9.0.12
+          image: gcr.io/demo-repo/tdmmasking:4.9.0.12
           env:
             - name: MESSAGING_SERVER
               value: messaging.tdmcomponents
