@@ -1,0 +1,264 @@
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: orientdb
+  labels:
+    name: tdmcomponents
+spec:
+  hostname: orientdb
+  subdomain: tdmcomponents
+  containers:
+    - name: orientdb
+      image: {{ .Values.orientimage }}
+      env:
+        - name: ORIENTDB_ROOT_PASSWORD
+          value: '{cry}tHpzgrvNhtVu6uHGNd9EdlAuwMR30OL0sAXhBWdgM3Md'
+      volumeMounts:
+        - mountPath: /orientdb/backup
+          name: orientdb-backup
+        - mountPath: /orientdb/databases
+          name: orientdb-databases
+      ports:
+        - containerPort: 2424
+  volumes:
+    - name: orientdb-backup
+      persistentVolumeClaim:
+              claimName: orientdb-backup
+    - name: orientdb-databases
+      persistentVolumeClaim:
+              claimName: orientdb-databases
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: messaging
+  labels:
+    name: tdmcomponents
+spec:
+  hostname: messaging
+  subdomain: tdmcomponents
+  containers:
+    - name: messaging
+      image: {{ .Values.messagingimage }}
+      env:
+        - name: RABBITMQ_LOG_BASE
+          value: /var/log/rabbitmq/log
+        - name: RABBITMQ_LOGS
+          value: /var/log/rabbitmq/log/rabbitmq.log
+        - name: RABBITMQ_SASL_LOGS
+          value: /var/log/rabbitmq/log/rabbitmq_sasl.log
+        - name: DEFAULT_USER
+          value: Admin
+        - name: DEFAULT_PASS
+          value: '{cry}1hY5pZrm87PWjgPdmypDbVZnL4a108lxy8YLuUVRMCr8'
+        - name: RABBITMQ_SSL_CACERTFILE
+          value: /home/testca/cacert.pem
+        - name: RABBITMQ_SSL_CERTFILE
+          value: /home/server/cert.pem
+        - name: RABBITMQ_SSL_FAIL_IF_NO_PEER_CERT
+          value: "false"
+        - name: RABBITMQ_SSL_VERIFY
+          value: verify_none
+        - name: RABBITMQ_SSL_KEYFILE
+          value: /home/server/key.pem
+      ports:
+        - containerPort: 5671
+        - containerPort: 15672
+        - containerPort: 15671
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: action-download
+  labels:
+    name: tdmcomponents
+spec:
+  hostname: action-download
+  subdomain: tdmcomponents
+  containers:
+    - name: action-download
+      image: {{ .Values.actionimage }}
+      ports:
+        - containerPort: 9443
+      env:
+        - name: ACTION_SECRET
+          value: "123"
+        - name: PUBLISH_ACTION
+          value: "/opt/download.sh"
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tdmweb
+  labels:
+    name: tdmwebsvc
+spec:
+  hostname: tdmweb
+  subdomain: tdmwebsvc
+  containers:
+   - name: tdmweb
+     image: {{ .Values.tdmwebimage }}
+     volumeMounts:
+       - name: tdmweb-logs
+         mountPath: /mnt/logs
+       - name: tdmweb-storage
+         mountPath: mnt/storage
+       - name: tdmweb-fdmconfig
+         mountPath: /mnt/fdmconfig
+     ports:
+       - containerPort: 8443
+     env:
+       - name: APPLICATION_PROP
+         value: tdmweb.TDMMaskingService.taskTimeout=30|tdmweb.profiling.uncommitted.reads=true|tdmweb.profiling.query.timeout=300
+       - name: GTREP_DATABASE
+         value: {{ .Values.gtrepdb }}
+       - name: GTREP_DB_TYPE
+         value: sqlserver
+       - name: GTREP_HOST
+         value: {{ .Values.gtrephost }}
+       - name: GTREP_PASSWORD
+         value: {{ .Values.gtrepPassword }}
+       - name: GTREP_PORT
+         value: "1433"
+       - name: GTREP_USER
+         value: {{ .Values.gtrepUser }}
+       - name: MESSAGING_PASS
+         value: '{cry}1hY5pZrm87PWjgPdmypDbVZnL4a108lxy8YLuUVRMCr8'
+       - name: MESSAGING_PORT
+         value: "5671"
+       - name: MESSAGING_SERVER
+         value: messaging.tdmcomponents
+       - name: MESSAGING_USER
+         value: Admin
+       - name: ORIENTDB_HOST
+         value: orientdb.tdmcomponents
+       - name: ORIENTDB_PASSWORD
+         value: '{cry}tHpzgrvNhtVu6uHGNd9EdlAuwMR30OL0sAXhBWdgM3Md'
+     livenessProbe:
+       httpGet:
+         path: /TestDataManager
+         port: 8443
+         scheme: HTTPS
+       initialDelaySeconds: 300
+       periodSeconds: 30
+  volumes:
+    - name: tdmweb-logs
+      persistentVolumeClaim:
+              claimName: tdmweb-logs
+    - name: tdmweb-storage
+      persistentVolumeClaim:
+              claimName: tdmweb-storage
+    - name: tdmweb-fdmconfig
+      persistentVolumeClaim:
+              claimName: tdmweb-fdmconfig
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: masking
+  labels:
+    name: tdmcomponents
+spec:
+  replicas: {{ .Values.maskingscale }}
+  selector:
+    matchLabels:
+      name: tdmcomponents
+  template:
+    metadata:
+      labels:
+        name: tdmcomponents
+    spec:
+      hostname: masking
+      subdomain: tdmcomponents
+      containers:
+        - name: masking
+          image: {{ .Values.maskingimage }}
+          env:
+            - name: MESSAGING_SERVER
+              value: messaging.tdmcomponents
+            - name: MESSAGING_PORT
+              value: "5671"
+            - name: MESSAGING_USER
+              value: Admin
+            - name: MESSAGING_PASS
+              value: '{cry}1hY5pZrm87PWjgPdmypDbVZnL4a108lxy8YLuUVRMCr8'
+          livenessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - 'cat /opt/tdm/logs/TDMMaskingService*.log | grep -vz "Connection refused"'
+            initialDelaySeconds: 10
+            periodSeconds: 15
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-monitor
+  labels:
+    name: tdmcomponents
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: tdmcomponents
+  template:
+    metadata:
+      labels:
+        name: tdmcomponents
+    spec:
+      containers:
+      - name: prometheus
+        image: kbudde/rabbitmq-exporter:v0.29.0
+        env:
+        - name: RABBIT_URL
+          value: https://messaging.tdmcomponents:15671
+        - name: RABBIT_USER
+          value: Admin
+        - name: RABBIT_PASSWORD
+          value: marmite
+        - name: PUBLISH_PORT
+          value: "9419"
+        - name: SKIPVERIFY
+          value: "true"
+          # amqp 3.6.9++
+        - name: RABBIT_CAPABILITIES
+          value: "bert,no_sort"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+      - name: prometheus-to-sd
+        image: gcr.io/google-containers/prometheus-to-sd:v0.5.2
+        command:
+        - /monitor
+        - --source=:http://localhost:9419
+        - --stackdriver-prefix=custom.googleapis.com
+        - --pod-id=$(POD_ID)
+        - --namespace-id=$(POD_NAMESPACE)
+        env:
+        - name: POD_ID
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.uid
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi

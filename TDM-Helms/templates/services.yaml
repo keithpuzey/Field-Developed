@@ -1,0 +1,50 @@
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: tdmhost
+    name: tdmwebsvc
+  name: tdmwebsvc
+spec:
+  type: NodePort
+  ports:
+  - name: "8443"
+    port: 8443
+    targetPort: 8443
+  selector:
+    name: tdmwebsvc
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: tdmsvc
+  name: tdmcomponents
+spec:
+  clusterIP: None
+  ports:
+  - name: "2424"
+    port: 2424
+    targetPort: 2424
+  - name: "5671"
+    port: 5671
+    targetPort: 5671
+  selector:
+    name: tdmcomponents
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: tdm-external-port
+spec:
+  selector:
+    name: tdmwebsvc
+  ports:
+    - port: {{ .Values.TDMPort }}
+      targetPort: 8443
+  type: LoadBalancer
