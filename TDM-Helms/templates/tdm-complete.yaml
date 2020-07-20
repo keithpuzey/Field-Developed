@@ -146,7 +146,7 @@ spec:
          path: /TestDataManager
          port: 8443
          scheme: HTTPS
-       initialDelaySeconds: 300
+       initialDelaySeconds: 600
        periodSeconds: 30
   volumes:
     - name: tdmweb-logs
