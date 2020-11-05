@@ -35,9 +35,9 @@ else
 Write-Host "`n $os is not Supported"   -ForegroundColor Black -BackgroundColor Red
 }
 
-
-$DisplayRes = Get-DisplayResolution
 # This will return the display resolution settings.
+$DisplayRes = Get-DisplayResolution
+# Compare display resolution with default native windows values and show a warning if the display resolution does not match,  Video recording does not work when the RDP session is not using native windows display settings
 
 if ($DisplayRes -eq "800x600" -or $DisplayRes -eq "1024x768" -or $DisplayRes -eq  "1152x864" -or $DisplayRes -eq  "1280x600" -or $DisplayRes -eq  "1280x720" -or $DisplayRes -eq  "1280x768" -or $DisplayRes -eq  "1280x800" -or $DisplayRes -eq  "1280x960" -or $DisplayRes -eq  "1280x1024" -or $DisplayRes -eq  "1360x768"  -or $DisplayRes -eq  "1366x768" -or $DisplayRes -eq  "1400x1050" -or $DisplayRes -eq  "1440x900" -or $DisplayRes -eq  "1536x864" -or $DisplayRes -eq  "1600x900" -or $DisplayRes -eq  "1680x1050" -or $DisplayRes -eq  "1920x1080" -or $DisplayRes -eq  "1920x1200"  -or $DisplayRes -eq  "1600x1200" -or $DisplayRes -eq  "2048x1152"  -or $DisplayRes -eq  "2560x1080"  -or $DisplayRes -eq  "2560x1440"  -or $DisplayRes -eq  "3440x1440"  -or $DisplayRes -eq  "3840x2160")
 
@@ -52,14 +52,13 @@ write-host "`n Check Display Resolution `n" ` -ForegroundColor Black -Background
 write-host "`n Browser Validation " -ForegroundColor White -BackgroundColor Black
 
 # Check If Chrome is installed
+
 $WantFile = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
 $FileExists = Test-Path $WantFile
 If ($FileExists -eq $True) {
           Write-Host "`nChrome is installed"  -ForegroundColor Black -BackgroundColor Green }
-
 Else {Write-Host "`n Chrome not installed" -ForegroundColor Black -BackgroundColor Red
 }
-
 
 # Check If Firefox is installed
 $WantFile = "C:\Program Files\Mozilla Firefox\firefox.exe"
@@ -74,10 +73,9 @@ write-host "`n Internet Explorer Settings " -ForegroundColor White -BackgroundCo
 
 $IEZoom = (Get-ItemProperty -path 'HKCU:\Software\Microsoft\Internet Explorer\Zoom').ZoomFactor
 
-# This will return the IE Zoom Value.
+# This will return the IE Zoom Value and show a warnign if the zoom value is not set to 100%
 
 if ($IEZoom -eq "80000" )
-
 
 {
 write-host "`n Internet Explorer Zoom Factor set to 100%`n" -ForegroundColor Black -BackgroundColor Green
@@ -86,6 +84,8 @@ write-host "`n Internet Explorer Zoom Factor set to 100%`n" -ForegroundColor Bla
 else {
 write-host "`n Internet Explorer Zoom Factor not set to 100% `n" ` -ForegroundColor Black -BackgroundColor Red
 }
+
+# Check if IE Enhanced Security is disabled
 
 if ((Test-Path -Path $IEAdminRegistryKey) -or (Test-Path -Path $IEUserRegistryKey)) {
     $IEAdminRegistryValue=(Get-ItemProperty -Path $IEAdminRegistryKey -Name IsInstalled).IsInstalled
@@ -109,8 +109,7 @@ if ((Test-Path -Path $IEAdminRegistryKey) -or (Test-Path -Path $IEUserRegistryKe
 Write-Host "`nRegistry Key Not Found!" -ForegroundColor Black -BackgroundColor Green
 }
 
-
-    # Write-Host "IE Protected Mode Configuration"  -ForegroundColor Black -BackgroundColor Green
+# Check IE Zone protected modes are enabled
 	
 function changeIeProtectedMode{
     # $hives = 0..4|%{"HKLM:\Software\Microsoft\Windows\CurrentVersion\Internet Settings\Zones\$_"}
@@ -127,7 +126,7 @@ function changeIeProtectedMode{
         write-host "`n$($keys|out-string)" # Key codes 0: Enabled, 3: Disabled 
 	}
 	
-	#  Uncomment to enable functionality to update all IE Zones protected mode flag.
+#  Uncomment to enable functionality to update all IE Zones protected mode flag.
     #DisplayName      value
     #-----------      -----
     #Computer         n/a
@@ -164,6 +163,7 @@ changeIeProtectedMode
 
 write-host "`n Required Applications " -ForegroundColor White -BackgroundColor Black
 
+# Check if Python is installed
 
 $registryExists = Test-Path HKLM:\Software\Wow6432Node\python
 
@@ -173,6 +173,7 @@ if ($registryExists -eq $True ) {
     Write-Host "$python is installed"  -ForegroundColor Black -BackgroundColor Green
     $pipbzt = & python -m pip freeze
 
+# Check blazemeter python packages are installed 
     if($pipbzt -eq $null){
     Write-Host " Python Blazemeter Packages not installed" -ForegroundColor Black -BackgroundColor Red
            
@@ -183,8 +184,6 @@ if ($registryExists -eq $True ) {
 	$boto3version = & python -m pip show boto3 | findstr Version 2>&1 
 
 	$bzmcommon = & python -m pip show bzm-common-library | findstr Version 2>&1 
-
- 
 
     if($botocoreversion -like "WARNING"){
     Write-Host "boto core not installed" -ForegroundColor Black -BackgroundColor Red
@@ -218,6 +217,7 @@ write-host "`n Network Connectivity " -ForegroundColor White -BackgroundColor Bl
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
+# Check connectivity to the Blazemeter platform
 
 foreach($url in $urls)
 
