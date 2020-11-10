@@ -41,11 +41,11 @@ $DisplayRes = Get-DisplayResolution
 if ($DisplayRes -eq "800x600" -or $DisplayRes -eq "1024x768" -or $DisplayRes -eq  "1152x864" -or $DisplayRes -eq  "1280x600" -or $DisplayRes -eq  "1280x720" -or $DisplayRes -eq  "1280x768" -or $DisplayRes -eq  "1280x800" -or $DisplayRes -eq  "1280x960" -or $DisplayRes -eq  "1280x1024" -or $DisplayRes -eq  "1360x768"  -or $DisplayRes -eq  "1366x768" -or $DisplayRes -eq  "1400x1050" -or $DisplayRes -eq  "1440x900" -or $DisplayRes -eq  "1536x864" -or $DisplayRes -eq  "1600x900" -or $DisplayRes -eq  "1680x1050" -or $DisplayRes -eq  "1920x1080" -or $DisplayRes -eq  "1920x1200"  -or $DisplayRes -eq  "1600x1200" -or $DisplayRes -eq  "2048x1152"  -or $DisplayRes -eq  "2560x1080"  -or $DisplayRes -eq  "2560x1440"  -or $DisplayRes -eq  "3440x1440"  -or $DisplayRes -eq  "3840x2160")
 
 {
-write-host "`n Display Resolution $Width x $Height OK `n" -ForegroundColor Black -BackgroundColor Green
+write-host "`n Display Resolution $DisplayRes OK `n" -ForegroundColor Black -BackgroundColor Green
 }
 
 else {
-write-host "`n Check Display Resolution  $Width x $Height `n" ` -ForegroundColor Black -BackgroundColor Yellow
+write-host "`n Check Display Resolution  $DisplayRes `n" ` -ForegroundColor Black -BackgroundColor Yellow
 }
 
 write-host "`n Browser Validation " -ForegroundColor White -BackgroundColor Black
