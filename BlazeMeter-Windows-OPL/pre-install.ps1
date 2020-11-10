@@ -47,9 +47,6 @@ $Monitor = [System.Windows.Forms.Screen]::PrimaryScreen
 	$Height = $Monitor.WorkingArea.Height
     $DisplayRes= "$Width$Height"
 
-    Write-Host "Display Resolution = $DisplayRes"
-  
-
 if ($DisplayRes -eq "800600" -or $DisplayRes -eq "1024768" -or $DisplayRes -eq  "1152864" -or $DisplayRes -eq  "1280600" -or $DisplayRes -eq  "1280720" -or $DisplayRes -eq  "1280768" -or $DisplayRes -eq  "1280800" -or $DisplayRes -eq  "1280960" -or $DisplayRes -eq  "12801024" -or $DisplayRes -eq  "1360768"  -or $DisplayRes -eq  "1366768" -or $DisplayRes -eq  "14001050" -or $DisplayRes -eq  "1440900" -or $DisplayRes -eq  "1536864" -or $DisplayRes -eq  "1600900" -or $DisplayRes -eq  "16801050" -or $DisplayRes -eq  "19201080" -or $DisplayRes -eq  "19201200"  -or $DisplayRes -eq  "16001200" -or $DisplayRes -eq  "20481152"  -or $DisplayRes -eq  "25601080"  -or $DisplayRes -eq  "25601440"  -or $DisplayRes -eq  "34401440"  -or $DisplayRes -eq  "38402160")
 
 # if ($DisplayRes -eq "800x600" -or $DisplayRes -eq "1024x768" -or $DisplayRes -eq  "1152x864" -or $DisplayRes -eq  "1280x600" -or $DisplayRes -eq  "1280x720" -or $DisplayRes -eq  "1280x768" -or $DisplayRes -eq  "1280x800" -or $DisplayRes -eq  "1280x960" -or $DisplayRes -eq  "1280x1024" -or $DisplayRes -eq  "1360x768"  -or $DisplayRes -eq  "1366x768" -or $DisplayRes -eq  "1400x1050" -or $DisplayRes -eq  "1440x900" -or $DisplayRes -eq  "1536x864" -or $DisplayRes -eq  "1600x900" -or $DisplayRes -eq  "1680x1050" -or $DisplayRes -eq  "1920x1080" -or $DisplayRes -eq  "1920x1200"  -or $DisplayRes -eq  "1600x1200" -or $DisplayRes -eq  "2048x1152"  -or $DisplayRes -eq  "2560x1080"  -or $DisplayRes -eq  "2560x1440"  -or $DisplayRes -eq  "3440x1440"  -or $DisplayRes -eq  "3840x2160")
