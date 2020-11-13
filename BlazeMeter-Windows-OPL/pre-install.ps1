@@ -19,10 +19,9 @@ $IEUserRegistryKey ="HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\
     "https://data.blazemeter.com"
 )
 
+write-host "`n Blazemeter OPL pre-requisite script" -ForegroundColor White -BackgroundColor Black  
 
-write-host "`n Blazemeter OPL pre-requisite script" -ForegroundColor White -BackgroundColor Black
-
-write-host "`n Operating System Validation " -ForegroundColor White -BackgroundColor Black
+write-host "`n Operating System Validation " -ForegroundColor White -BackgroundColor Black  
 
 # Get OS Version / Name
 
@@ -35,9 +34,10 @@ else
 Write-Host "`n $os is not Supported"   -ForegroundColor Black -BackgroundColor Red
 }
 
+$users = (quser) -ireplace '\s{2,}',',' | convertfrom-csv
+$sessionname = $users.sessionname
 
-
-if ($User.SESSIONNAME -eq "console") 
+if ($sessionname -eq "console") 
 {
 
         write-host  $User.SESSIONNAME
@@ -61,7 +61,7 @@ if ($User.SESSIONNAME -eq "console")
     }
 
 
-if ($User.SESSIONNAME -ne "console") 
+if ($sessionname -ne "console") 
 {
  
 
@@ -142,7 +142,7 @@ if ((Test-Path -Path $IEAdminRegistryKey) -or (Test-Path -Path $IEUserRegistryKe
     }
     }
 } else {
-Write-Host "`nRegistry Key Not Found!" -ForegroundColor Black -BackgroundColor Green
+Write-Host "`n" 
 }
 
 
@@ -320,5 +320,3 @@ foreach($authurl in $authurls)
       
    }
 }
-
-
