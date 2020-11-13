@@ -102,19 +102,25 @@ Else {Write-Host "`n FireFox is not installed"  -ForegroundColor Black -Backgrou
 
 write-host "`n Internet Explorer Settings " -ForegroundColor White -BackgroundColor Black
 
-$IEZoom = (Get-ItemProperty -path 'HKCU:\Software\Microsoft\Internet Explorer\Zoom').ZoomFactor
-
 # This will return the IE Zoom Value.
 
-if ($IEZoom -eq "80000" )
-
-
-{
-write-host "`n Internet Explorer Zoom Factor set to 100%`n" -ForegroundColor Black -BackgroundColor Green
+Try {
+    Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Internet Explorer\Zoom" -Name "ZoomFactor"
 }
+Catch {
 
-else {
-write-host "`n Internet Explorer Zoom Factor not set to 100% `n" ` -ForegroundColor Black -BackgroundColor Red
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Internet Explorer\Zoom" -Name "ZoomFactor" -Value '80000'
+   
+}
+Finally {
+    if ((Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Internet Explorer\Zoom" -Name "ZoomFactor") -eq '80000') {
+        write-host "`n Internet Explorer Zoom Factor set to 100%`n" -ForegroundColor Black -BackgroundColor Green 
+    } elseif ((Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Internet Explorer\Zoom" -Name "ZoomFactor") -ne '80000') {
+        write-host "`n Internet Explorer Zoom Factor not set to 100% `n" ` -ForegroundColor Black -BackgroundColor Red 
+    } else {
+        Write-Output "`n Internet Explorer Zoom Factor not set to 100% `n" ` -ForegroundColor Black -BackgroundColor Red 
+    }
+    
 }
 
 if ((Test-Path -Path $IEAdminRegistryKey) -or (Test-Path -Path $IEUserRegistryKey)) {
