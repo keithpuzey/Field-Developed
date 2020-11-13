@@ -105,7 +105,7 @@ write-host "`n Internet Explorer Settings " -ForegroundColor White -BackgroundCo
 # This will return the IE Zoom Value.
 
 Try {
-    Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Internet Explorer\Zoom" -Name "ZoomFactor"
+    $IEZoomFactor = Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Internet Explorer\Zoom" -Name "ZoomFactor"
 }
 Catch {
 
