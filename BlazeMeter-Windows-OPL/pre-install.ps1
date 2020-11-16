@@ -8,6 +8,9 @@ $IEUserRegistryKey ="HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\
 $zoomfactorpath = "HKCU:\Software\Microsoft\Internet Explorer\Zoom\"
 $zoomfactorkey = "ZoomFactor"
 $zoomfactorvalue = "80000"
+$ChromeExe = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+$FirefoxExe = "C:\Program Files\Mozilla Firefox\firefox.exe"
+$PythonExists = Test-Path HKLM:\Software\Wow6432Node\python
 
 [string[]]$authurls = ( 
     "https://bard.blazemeter.com",
@@ -85,18 +88,15 @@ if ($sessionname -ne "console")
 write-host "`n Browser Validation " -ForegroundColor White -BackgroundColor Black
 
 # Check If Chrome is installed
-$WantFile = "C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-$FileExists = Test-Path $WantFile
+$FileExists = Test-Path $ChromeExe
 If ($FileExists -eq $True) {
           Write-Host "`nChrome is installed"  -ForegroundColor Black -BackgroundColor Green }
 
 Else {Write-Host "`n Chrome not installed" -ForegroundColor Black -BackgroundColor Red
 }
 
-
 # Check If Firefox is installed
-$WantFile = "C:\Program Files\Mozilla Firefox\firefox.exe"
-$FileExists = Test-Path $WantFile
+$FileExists = Test-Path $FirefoxExe
 If ($FileExists -eq $True) {
       Write-Host "`n FireFox Installed"   -ForegroundColor Black -BackgroundColor Green
     }
@@ -107,21 +107,19 @@ write-host "`n Internet Explorer Settings " -ForegroundColor White -BackgroundCo
 
 # This will return the IE Zoom Value.
 
-
-
 if ((Get-ItemProperty $zoomfactorpath -Name $zoomfactorkey -EA 0).$zoomfactorkey -ne $null) 
 {
     $iezoomfactor = (Get-ItemProperty -Path "HKCU:\Software\Microsoft\Internet Explorer\Zoom").ZoomFactor
     if ( $iezoomfactor -eq '80000') 
     {
-    write-host "`n Internet Explorer Zoom Factor set to 100%`n" -ForegroundColor Black -BackgroundColor Green 
+    write-host "`nInternet Explorer Zoom Factor set to 100%`n" -ForegroundColor Black -BackgroundColor Green 
     }
     else {
-        write-host "`n Internet Explorer Zoom Factor not set to 100% `n" ` -ForegroundColor Black -BackgroundColor Red 
+        write-host "`nInternet Explorer Zoom Factor not set to 100% `n" ` -ForegroundColor Black -BackgroundColor Red 
     }
 } else {
     Set-ItemProperty -Path $zoomfactorpath -Name $zoomfactorkey -Value $zoomfactorvalue
-    write-host "`n Internet Explorer Zoom Factor set to 100%`n" -ForegroundColor Black -BackgroundColor Green 
+    write-host "`nInternet Explorer Zoom Factor set to 100%`n" -ForegroundColor Black -BackgroundColor Green 
 }
 
 
@@ -206,10 +204,7 @@ changeIeProtectedMode
 
 write-host "`nRequired Applications " -ForegroundColor White -BackgroundColor Black
 
-
-$registryExists = Test-Path HKLM:\Software\Wow6432Node\python
-
-if ($registryExists -eq $True ) {
+if ($PythonExists -eq $True ) {
 
 	$python = & python -V 2>&1
     Write-Host "`n$python is installed"  -ForegroundColor Black -BackgroundColor Green
