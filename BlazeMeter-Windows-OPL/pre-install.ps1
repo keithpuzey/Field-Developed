@@ -5,6 +5,9 @@ Clear-Host
 $ComputerName=$env:COMPUTERNAME
 $IEAdminRegistryKey="HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A7-37EF-4b3f-8CFC-4F3A74704073}"
 $IEUserRegistryKey ="HKLM:\SOFTWARE\Microsoft\Active Setup\Installed Components\{A509B1A8-37EF-4b3f-8CFC-4F3A74704073}"
+$zoomfactorpath = "HKCU:\Software\Microsoft\Internet Explorer\Zoom\"
+$zoomfactorkey = "ZoomFactor"
+$zoomfactorvalue = "80000"
 
 [string[]]$authurls = ( 
     "https://bard.blazemeter.com",
@@ -104,24 +107,23 @@ write-host "`n Internet Explorer Settings " -ForegroundColor White -BackgroundCo
 
 # This will return the IE Zoom Value.
 
-Try {
-    $IEZoomFactor = Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Internet Explorer\Zoom" -Name "ZoomFactor"
-}
-Catch {
 
-    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Internet Explorer\Zoom" -Name "ZoomFactor" -Value '80000'
-   
-}
-Finally {
-    if ((Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Internet Explorer\Zoom" -Name "ZoomFactor") -eq '80000') {
-        write-host "`n Internet Explorer Zoom Factor set to 100%`n" -ForegroundColor Black -BackgroundColor Green 
-    } elseif ((Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Internet Explorer\Zoom" -Name "ZoomFactor") -ne '80000') {
-        write-host "`n Internet Explorer Zoom Factor not set to 100% `n" ` -ForegroundColor Black -BackgroundColor Red 
-    } else {
-        Write-Output "`n Internet Explorer Zoom Factor not set to 100% `n" ` -ForegroundColor Black -BackgroundColor Red 
+
+if ((Get-ItemProperty $zoomfactorpath -Name $zoomfactorkey -EA 0).$zoomfactorkey -ne $null) 
+{
+    $iezoomfactor = (Get-ItemProperty -Path "HKCU:\Software\Microsoft\Internet Explorer\Zoom").ZoomFactor
+    if ( $iezoomfactor -eq '80000') 
+    {
+    write-host "`n Internet Explorer Zoom Factor set to 100%`n" -ForegroundColor Black -BackgroundColor Green 
     }
-    
+    else {
+        write-host "`n Internet Explorer Zoom Factor not set to 100% `n" ` -ForegroundColor Black -BackgroundColor Red 
+    }
+} else {
+    Set-ItemProperty -Path $zoomfactorpath -Name $zoomfactorkey -Value $zoomfactorvalue
+    write-host "`n Internet Explorer Zoom Factor set to 100%`n" -ForegroundColor Black -BackgroundColor Green 
 }
+
 
 if ((Test-Path -Path $IEAdminRegistryKey) -or (Test-Path -Path $IEUserRegistryKey)) {
     $IEAdminRegistryValue=(Get-ItemProperty -Path $IEAdminRegistryKey -Name IsInstalled).IsInstalled
