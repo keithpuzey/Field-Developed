@@ -15,7 +15,8 @@ $PythonExists = Test-Path HKLM:\Software\Wow6432Node\python
 [string[]]$authurls = ( 
     "https://bard.blazemeter.com",
     "https://auth.blazemeter.com",
-    "https://storage.blazemeter.com"
+    "https://storage.blazemeter.com",
+    "https://storage.googleapis.com"
 )
 
 [string[]]$urls = ( 
@@ -322,3 +323,4 @@ foreach($authurl in $authurls)
       
    }
 }
+pause
