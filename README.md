@@ -2,4 +2,4 @@
 Field Developed Scripts
 
 
-    Sample scripts for integration with Broadcom products
+    Sample scripts for integration with BlazeMeter products
