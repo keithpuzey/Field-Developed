@@ -1,11 +1,11 @@
 Feature: Application Stress Test
 
   Scenario: API Stress Test
-    Given API Query 
+    Given API Query https://demoblaze.com/prod.html?idp_=
     And 10 users connect
     And the test executes for 2 minutes
     And has a ramp up time of 1 minutes
-    When Response time is less than 1ms
+    When Response time is less than 2s
     Then Response is good
 
   Scenario: Stress Test using existing JMeter File and cloud reporting
