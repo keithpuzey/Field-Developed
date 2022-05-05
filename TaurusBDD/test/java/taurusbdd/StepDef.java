@@ -7,11 +7,13 @@ import java.io.File;
 import java.io.FileWriter;   // Import the FileWriter class
 import java.io.IOException;  // Import the IOException class to handle errors
 import java.io.InputStreamReader;
-import dataprovider.ConfigFileReader;
-import cucumber.annotation.en.And;
-import cucumber.annotation.en.Given;
-import cucumber.annotation.en.Then;
-import cucumber.annotation.en.When;
+// import dataprovider.ConfigFileReader;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+
 
 
 public class StepDef { 
@@ -25,13 +27,15 @@ String loadstring = "";
 String processcmd = "";
 String bzmtoken;
 String parametervariable;
-ConfigFileReader configFileReader;
+// ConfigFileReader configFileReader;
 String testexecutionname = "";
 String durationvariable = "";
 String rampupvariable = "";
 String datagenvariable;
 String jmxvariable;
-	
+
+
+
    @Given("^API Query ([^\"]*)$") 
    public void URL(String url){
 	   urlvariable = url ;
@@ -61,12 +65,12 @@ String jmxvariable;
 	   cloudstring = "- module: blazemeter";
    }
   
-   @And("Load is generated from the Cloud$")
-   public void loadsettings(){
-	   configFileReader= new ConfigFileReader();
-	   bzmtoken = configFileReader.getbzmtoken();
-	   loadstring = ", \"-o modules.blazemeter.token="+bzmtoken+" -cloud\"";
-   }
+//   @And("Load is generated from the Cloud$")
+//   public void loadsettings(){
+//	   configFileReader= new ConfigFileReader();
+//	   bzmtoken = configFileReader.getbzmtoken();
+//	   loadstring = ", \"-o modules.blazemeter.token="+bzmtoken+" -cloud\"";
+//   }
 
    @And("^the test executes for ([^\"]*) minutes$")
    public void specification(String duration){
