@@ -2,17 +2,17 @@
 import groovy.json.JsonSlurper
 
 //  Blazemeter Environment - Workspace / Account
-def workspaceID = 3482213
-def account = 291442
+def workspaceID = 348607
+def account = 352831
 
 // Blazemeter Mock Service Details
-def ServiceID = "1110"
+def ServiceID = "144952"
 def MockThinkTime = "0"
 
 // Blazemeter Tests - Performance Test ID / Functional Test ID / Functional Test Suite ID
-def BMTestID = 8952028
-def BMfunctest = 8929143
-def BMfuncsuitetest = 1212353
+def BMTestID = 10987127
+def BMfunctest = 11379990
+def BMfuncsuitetest = 10137037
 
 	
 pipeline {
@@ -25,9 +25,9 @@ pipeline {
             script {
 //  Mock Service Definition
 
-  def payload = """{ "description": "Jenkins Build $BUILD_NUMBER", "endpointPreference": "HTTPS", "harborId": "5c544422c7333735767b23ce","type": "TRANSACTIONAL",
-  "liveSystemHost": "null", "liveSystemPort": "null", "name": "Jenkins Build $BUILD_NUMBER", "serviceId": ${ServiceID}, "shipId":"5d33ab3526ad28f53205574" ,"thinkTime": ${MockThinkTime},
-   "mockServiceTransactions": [{"txnId":9500,"priority":10},{"txnId":9501,"priority":10},{"txnId":9502,"priority":10}]}"""
+  def payload = """{ "description": "Jenkins Build $BUILD_NUMBER", "endpointPreference": "HTTPS", "harborId": "605c5c25c2db93377c7bbbf4","type": "TRANSACTIONAL",
+  "liveSystemHost": "null", "liveSystemPort": "null", "name": "Jenkins Build $BUILD_NUMBER", "serviceId": ${ServiceID}, "shipId":"62dfc37917224310c4622ca3" ,"thinkTime": ${MockThinkTime},
+   "mockServiceTransactions": [{"txnId":4231706,"priority":10},{"txnId":4231707,"priority":10},{"txnId":4231708,"priority":10}]}"""
 
  // Create Mock Service using payload patchOrg
 	       def response = httpRequest authentication: 'BMCredentials', contentType: 'APPLICATION_JSON', httpMode: 'POST', requestBody: payload , url: "https://mock.blazemeter.com/api/v1/workspaces/" + workspaceID + "/service-mocks"
