@@ -25,7 +25,8 @@ pipeline {
 	    sshagent(['website']) {
                  // some block
                  sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'whoami'"
-                 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'ls -lia .'"
+		 sh "scp -r /var/jenkins_home/workspace/Digital\ Bank\ Demo\ WebSite/demowebsite/finance-update-topmenu/* kpuzey@10.128.0.81:/var/lib/www/ 
+                 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'ls -lia /var/lib/www'"
 		 
              }
             script {
