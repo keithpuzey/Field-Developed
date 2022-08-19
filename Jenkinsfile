@@ -22,8 +22,7 @@ pipeline {
          steps {
             echo 'Extract Build to Develpoment Environment'
             echo 'Prepare Environment - Create Mock Services'
-	    def replace = { /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-update-topmenu/index.html, BUILDNUMBER, ${BUILD_NUMBER}  ->
-        source.write(source.text.replaceAll(toSearch, replacement))
+	    sh find /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-update-topmenu -type f -exec sed -i "s/BUILDNUMBER/${BUILD_NUMBER}/g" {} +
     }
 	    sshagent(['website']) {
                  // some block
