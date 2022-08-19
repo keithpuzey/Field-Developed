@@ -34,7 +34,14 @@ pipeline {
              }
             script {
 //  Mock Service Definition
-
+	echo "UI Sanity Test - Jenkins Build " + BUILD_NUMBER
+		sh "mkdir -p "${WORKSPACE}/.npm-global""
+		sh "export PATH="$PATH:$WORKSPACE/.npm-global/bin""
+		sh "npm config set prefix ${WORKSPACE}/.npm-global"
+		sh "npm install -g scriptless-cli"
+		sh "scriptless-cli run --cloudURL "https://blzm.app.perfectomobile.com" --securityToken "eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJiYTVjN2I1OC0yNzI2LTRlNjUtOTMyMi02MzlhMmU2MjhjYzcifQ.eyJpYXQiOjE2NTAzODI4NTQsImp0aSI6Ijk3NjQ4ZGU2LWQ3N2EtNDYyZi05ZDBmLTlkNzBmMjAxMzM5OCIsImlzcyI6Imh0dHBzOi8vYXV0aDUucGVyZmVjdG9tb2JpbGUuY29tL2F1dGgvcmVhbG1zL2Jsem0tcGVyZmVjdG9tb2JpbGUtY29tIiwiYXVkIjoiaHR0cHM6Ly9hdXRoNS5wZXJmZWN0b21vYmlsZS5jb20vYXV0aC9yZWFsbXMvYmx6bS1wZXJmZWN0b21vYmlsZS1jb20iLCJzdWIiOiJlNDRjNmQ4NC02NWFlLTQxNDUtODhiYS0zNGIxYzM3NjVlOWUiLCJ0eXAiOiJPZmZsaW5lIiwiYXpwIjoib2ZmbGluZS10b2tlbi1nZW5lcmF0b3IiLCJub25jZSI6Ijc0Y2UwODE3LWJhMmItNDgzMC1hMGQ4LWVjN2EyM2FhYzE1NCIsInNlc3Npb25fc3RhdGUiOiI4ZWQyY2M1ZC0yOTk1LTQ5MTktYWJiYi0yMmQ2N2M1ZDljYzkiLCJzY29wZSI6Im9wZW5pZCBlbWFpbCBvZmZsaW5lX2FjY2VzcyBwcm9maWxlIn0.yb-hcyVhjechMXAvmrtv4-BpumFjbnxI-xVi9Dnxq5Y" -p "Digital Bank" -v "Base" -j "Home Page Sanity Test" -l "Chrome 1440x900" -e "http://home.dbankdemo.com(Default)" -c jenkins -r $BUILD_NUMBER-report.xml"
+    
+		    
   def payload = """{ "description": "Jenkins Build $BUILD_NUMBER", "endpointPreference": "HTTPS", "harborId": "605c5c25c2db93377c7bbbf4","type": "TRANSACTIONAL",
   "liveSystemHost": "null", "liveSystemPort": "null", "name": "Jenkins Build $BUILD_NUMBER", "serviceId": ${ServiceID}, "shipId":"62dfc37917224310c4622ca3" ,"thinkTime": ${MockThinkTime},
    "mockServiceTransactions": [{"txnId":4231706,"priority":10},{"txnId":4231707,"priority":10},{"txnId":4231708,"priority":10}]}"""
