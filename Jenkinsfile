@@ -44,7 +44,7 @@ pipeline {
             }
 	    script {
             while (true) {
-	    sleep 120
+	    sleep 60
 
 	    // Retrieve Status of Mock Service    
 	    
