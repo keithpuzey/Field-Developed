@@ -22,6 +22,12 @@ pipeline {
          steps {
             echo 'Extract Build to Develpoment Environment'
             echo 'Prepare Environment - Create Mock Services'
+	    sshagent(['website']) {
+                 // some block
+                 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'whoami'"
+                 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'ls -lia .'"
+		 
+             }
             script {
 //  Mock Service Definition
 
