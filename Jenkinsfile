@@ -32,7 +32,7 @@ pipeline {
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'rm -r -f /tmp/www'"
 		 // sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'echo "scriptless-cli run --cloudURL "https://blzm.app.perfectomobile.com" --securityToken "eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJiYTVjN2I1OC0yNzI2LTRlNjUtOTMyMi02MzlhMmU2MjhjYzcifQ.eyJpYXQiOjE2NTAzODI4NTQsImp0aSI6Ijk3NjQ4ZGU2LWQ3N2EtNDYyZi05ZDBmLTlkNzBmMjAxMzM5OCIsImlzcyI6Imh0dHBzOi8vYXV0aDUucGVyZmVjdG9tb2JpbGUuY29tL2F1dGgvcmVhbG1zL2Jsem0tcGVyZmVjdG9tb2JpbGUtY29tIiwiYXVkIjoiaHR0cHM6Ly9hdXRoNS5wZXJmZWN0b21vYmlsZS5jb20vYXV0aC9yZWFsbXMvYmx6bS1wZXJmZWN0b21vYmlsZS1jb20iLCJzdWIiOiJlNDRjNmQ4NC02NWFlLTQxNDUtODhiYS0zNGIxYzM3NjVlOWUiLCJ0eXAiOiJPZmZsaW5lIiwiYXpwIjoib2ZmbGluZS10b2tlbi1nZW5lcmF0b3IiLCJub25jZSI6Ijc0Y2UwODE3LWJhMmItNDgzMC1hMGQ4LWVjN2EyM2FhYzE1NCIsInNlc3Npb25fc3RhdGUiOiI4ZWQyY2M1ZC0yOTk1LTQ5MTktYWJiYi0yMmQ2N2M1ZDljYzkiLCJzY29wZSI6Im9wZW5pZCBlbWFpbCBvZmZsaW5lX2FjY2VzcyBwcm9maWxlIn0.yb-hcyVhjechMXAvmrtv4-BpumFjbnxI-xVi9Dnxq5Y" -p "Digital Bank" -v "Base" -j "Home Page Sanity Test" -l "Chrome 1440x900" -e "http://home.dbankdemo.com(Default)" -c jenkins -r $BUILD_NUMBER-report.xml" > /tmp/perfecto.sh'"
     		 // sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'chmod 777 /tmp/perfecto.sh'"
-		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'cd /home/kpuzey | sudo ./perfectoexec.sh'"
+		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'cd /home/kpuzey | ./perfectoexec.sh'"
 		  
              }
             script {
