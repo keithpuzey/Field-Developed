@@ -22,7 +22,7 @@ pipeline {
          steps {
             echo 'Extract Build to Develpoment Environment'
             echo 'Prepare Environment - Create Mock Services'
-            "sed  's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-update-topmenu/index.html"
+            sh "sed  -i 's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-update-topmenu/index.html"
     }
 	    sshagent(['website']) {
                  // some block
