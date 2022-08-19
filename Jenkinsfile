@@ -58,7 +58,7 @@ pipeline {
        echo "Mock Service Jenkins Build " + BUILD_NUMBER + "  Started -  Endpoint details " + mockendpoint
 	   echo "Deploy Digital Bank Build" + BUILD_NUMBER + "  to Test Environment"
 	   sleep 5
-           echo "Configuring Digital Banking application with mock service details"
+ //          echo "Configuring Digital Banking application with mock service details"
 //           script {
 	// Start Blazemeter  Performance Test
 //	    echo "Start Blazemeter Performance Test "
