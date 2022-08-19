@@ -61,104 +61,103 @@ pipeline {
            echo "Configuring Digital Banking application with mock service details"
            script {
 	// Start Blazemeter  Performance Test
-	    echo "Start Blazemeter Performance Test "
-		   
-	       def response = httpRequest authentication: 'BMCredentials', contentType: 'APPLICATION_JSON', httpMode: 'POST', url: "https://a.blazemeter.com/api/v4/tests/"+BMTestID+"/Start"
-               def json = new JsonSlurper().parseText(response.content)
-               testsessionid = json.result.sessionsId[0]
-	       echo "Test Session ID =  " + testsessionid
-	   }
-	    script {
-            while (true) {
-	    sleep 120
-	    // Check Status of Test    
-	    def response = httpRequest authentication: 'BMCredentials', acceptType: 'APPLICATION_JSON_UTF8', contentType: 'APPLICATION_JSON', httpMode: 'GET', url: "https://a.blazemeter.com:443/api/latest/sessions/"+testsessionid
-	    def json = new JsonSlurper().parseText(response.content)
-            testthreshold = json.result.failedThresholds
-            teststat = json.result.status
-            if ( teststat == 'ENDED') break
-            }
-            if (testthreshold == 0 ) {
-                echo 'Test Passed'
-		testresult = "Blazemeter Performance Test Passed"
-            } else {
-                echo 'Test Failed '
-		testresult = "Blazemeter Performance Test Failed"
-            }  
-           } 
+//	    echo "Start Blazemeter Performance Test "
+//		   
+//	       def response = httpRequest authentication: 'BMCredentials', contentType: 'APPLICATION_JSON', httpMode: 'POST', url: "https://a.blazemeter.com/api/v4/tests/"+BMTestID+"/Start"
+//               def json = new JsonSlurper().parseText(response.content)
+//               testsessionid = json.result.sessionsId[0]
+//	       echo "Test Session ID =  " + testsessionid
+//	   }
+//	    script {
+//            while (true) {
+//	    sleep 120
+//	    // Check Status of Test    
+//	    def response = httpRequest authentication: 'BMCredentials', acceptType: 'APPLICATION_JSON_UTF8', contentType: 'APPLICATION_JSON', httpMode: 'GET', url: "https://a.blazemeter.com:443/api/latest/sessions/"+testsessionid
+//	    def json = new JsonSlurper().parseText(response.content)
+  //          testthreshold = json.result.failedThresholds
+    //        teststat = json.result.status
+      //      if ( teststat == 'ENDED') break
+        //    }
+          //  if (testthreshold == 0 ) {
+  //              echo 'Test Passed'
+//		testresult = "Blazemeter Performance Test Passed"
+  //          } else {
+    //            echo 'Test Failed '
+//		testresult = "Blazemeter Performance Test Failed"
+  //          }  
+    //       } 
 		 
-script {
+//script {
 // Start Blazemeter Functional Test Suite with Test Data Model
- echo "Define Test Data Model"
- def datamodel = """{"dependencies":{"data":{"kind":"tdm","type":"object",
- "properties":{"FirstName":{"type":"string"},"LastName":{"type":"string"},"EmailAddress":{"type":"string"}},
- "requirements":{"FirstName":"randlov(0,seedlist(\\"firstnames\\"))","LastName":"randlov(0, seedlist(\\"lastnames\\"))","EmailAddress":"(\${FirstName}+\\".\\"+\${LastName}+\\"@gmail.com\\").replace(/ /g,\\".\\")"},"repeat":"5"}}}"""
-
- echo "Start Functional test"
- def dmresponse = httpRequest authentication: 'BMCredentials', contentType: 'APPLICATION_JSON', httpMode: 'PUT', requestBody: datamodel , url: "https://a.blazemeter.com/api/v4/tests/"+BMfunctest
-
- }
+// echo "Define Test Data Model"
+// def datamodel = """{"dependencies":{"data":{"kind":"tdm","type":"object",
+// "properties":{"FirstName":{"type":"string"},"LastName":{"type":"string"},"EmailAddress":{"type":"string"}},
+// "requirements":{"FirstName":"randlov(0,seedlist(\\"firstnames\\"))","LastName":"randlov(0, seedlist(\\"lastnames\\"))","EmailAddress":"(\${FirstName}+\\".\\"+\${LastName}+\\"@gmail.com\\").replace(/ /g,\\".\\")"},"repeat":"5"}}}"""
+//
+// echo "Start Functional test"
+// def dmresponse = httpRequest authentication: 'BMCredentials', contentType: 'APPLICATION_JSON', httpMode: 'PUT', requestBody: datamodel , url: "https://a.blazemeter.com/api/v4/tests/"+BMfunctest
+//
+// }
  
- script {
-            while (true) {
-	    sleep 120
-	    // Check Status of Test    
-	    def response = httpRequest authentication: 'BMCredentials', acceptType: 'APPLICATION_JSON_UTF8', contentType: 'APPLICATION_JSON', httpMode: 'GET', url: "https://a.blazemeter.com:443/api/v4/masters/"+testmasterid+"/status?events=false"
-	    def json = new JsonSlurper().parseText(response.content)
-            teststat = json.result.status
-	    echo "Test Status = " + teststat
-            if ( teststat == "ENDED") break
-            }
-	    def response = httpRequest authentication: 'BMCredentials', acceptType: 'APPLICATION_JSON_UTF8', contentType: 'APPLICATION_JSON', httpMode: 'GET', url: "https://a.blazemeter.com:443/api/v4/masters/"+testmasterid+"/full?external=false"
-	    def json = new JsonSlurper().parseText(response.content)
-            projectID = json.result.projectId
-	    testresult = json.result.passed
-            if (testresult == true ) {
-                echo 'Test Passed'
-		echo "Test details : https://a.blazemeter.com/app/#/accounts/"+account+"/workspaces/"+workspaceID+"/projects/"+projectID+"/masters/"+testmasterid+"/cross-browser-summary"
-		testresult = "Blazemeter Test Passed"
-            } else {
-                echo 'Test Failed '
-		"Test details : https://a.blazemeter.com/app/#/accounts/"+account+"/workspaces/"+workspaceID+"/projects/"+projectID+"/masters/"+testmasterid+"/cross-browser-summary"
-		testresult = "Blazemeter Test Failed"
-            }  
-           }  
-           script {
-	// Start Blazemeter Functional Test Suite
-	    echo "Define Test Data"
-	    def datamodel = """{"dependencies":{"data":{"kind":"tdm","type":"object","properties":{"FirstName":{"type":"string"},"LastName":{"type":"string"},"EmailAddress":{"type":"string"},"SSN":{"type":"string"},"home_phone":{"type":"string"},"mobile_phone":{"type":"string"},"work_phone":{"type":"string"},"index":{"type":"string"},"dob":{"type":"string"},"address":{"type":"string"},"city":{"type":"string"},"state":{"type":"string"},"zip_code":{"type":"string"},"jenkins_build":{"type":"string"}},"requirements":{"FirstName":"randlov(0,seedlist(\\"firstnames\\"))","LastName":"randlov(0, seedlist(\\"lastnames\\"))","EmailAddress":"(\${FirstName}+\\".\\"+\${LastName}+\\"@gmail.com\\").replace(/ /g,\\".\\")","SSN":"randDigits(3,3)+\\"-\\"+randDigits(2,2)+\\"-\\"+randDigits(4,4)","home_phone":"\\"(\\"+randDigits(3,3)+\\")\\"+randDigits(3,3)+\\"-\\"+randDigits(4,4)","mobile_phone":"\\"(\\"+randDigits(3,3)+\\")\\"+randDigits(3,3)+\\"-\\"+randDigits(4,4)","work_phone":"\\"(\\"+randDigits(3,3)+\\")\\"+randDigits(3,3)+\\"-\\"+randDigits(4,4)","index":"randInt(1,100)","jenkins_build":"${BUILD_NUMBER}" ,"dob":"datetime(dateOfBirth(18, 100,now()),\\"MM/DD/YYYY\\")","address":"valueFromSeedlist(\\"usaddress-multicol\\", \${index}, 1)","city":"valueFromSeedlist(\\"usaddress-multicol\\", \${index}, 2) ","state":"valueFromSeedlist(\\"usaddress-multicol\\", \${index}, 3) ","zip_code":"valueFromSeedlist(\\"usaddress-multicol\\", \${index}, 4)"},"repeat":"5"}}}"""
-	    def dmresponse = httpRequest authentication: 'BMCredentials', contentType: 'APPLICATION_JSON', httpMode: 'PUT', requestBody: datamodel , url: "https://a.blazemeter.com/api/v4/tests/"+BMfunctest
+// script {
+//            while (true) {
+//	    sleep 120
+//	    // Check Status of Test    
+//	    def response = httpRequest authentication: 'BMCredentials', acceptType: 'APPLICATION_JSON_UTF8', contentType: 'APPLICATION_JSON', httpMode: 'GET', url: "https://a.blazemeter.com:443/api/v4/masters/"+testmasterid+"/status?events=false"
+//	    def json = new JsonSlurper().parseText(response.content)
+  //          teststat = json.result.status
+//	    echo "Test Status = " + teststat
+  //          if ( teststat == "ENDED") break
+//            }
+////	    def response = httpRequest authentication: 'BMCredentials', acceptType: 'APPLICATION_JSON_UTF8', contentType: 'APPLICATION_JSON', httpMode: 'GET', url: "https://a.blazemeter.com:443/api/v4/masters/"+testmasterid+"/full?external=false"    def json = new JsonSlurper().parseText(response.content)
+//            projectID = json.result.projectId
+//	    testresult = json.result.passed
+  //          if (testresult == true ) {
+//                echo 'Test Passed'
+//		echo "Test details : https://a.blazemeter.com/app/#/accounts/"+account+"/workspaces/"+workspaceID+"/projects/"+projectID+"/masters/"+testmasterid+"/cross-browser-summary"
+//		testresult = "Blazemeter Test Passed"
+  //          } else {
+    //            echo 'Test Failed '
+//		"Test details : https://a.blazemeter.com/app/#/accounts/"+account+"/workspaces/"+workspaceID+"/projects/"+projectID+"/masters/"+testmasterid+"/cross-browser-summary"
+//		testresult = "Blazemeter Test Failed"
+//            }  
+  //         }  
+//           script {
+//	// Start Blazemeter Functional Test Suite
+//	    echo "Define Test Data"
+//	    def datamodel = """{"dependencies":{"data":{"kind":"tdm","type":"object","properties":{"FirstName":{"type":"string"},"LastName":{"type":"string"},"EmailAddress":{"type":"string"},"SSN":{"type":"string"},"home_phone":{"type":"string"},"mobile_phone":{"type":"string"},"work_phone":{"type":"string"},"index":{"type":"string"},"dob":{"type":"string"},"address":{"type":"string"},"city":{"type":"string"},"state":{"type":"string"},"zip_code":{"type":"string"},"jenkins_build":{"type":"string"}},"requirements":{"FirstName":"randlov(0,seedlist(\\"firstnames\\"))","LastName":"randlov(0, seedlist(\\"lastnames\\"))","EmailAddress":"(\${FirstName}+\\".\\"+\${LastName}+\\"@gmail.com\\").replace(/ /g,\\".\\")","SSN":"randDigits(3,3)+\\"-\\"+randDigits(2,2)+\\"-\\"+randDigits(4,4)","home_phone":"\\"(\\"+randDigits(3,3)+\\")\\"+randDigits(3,3)+\\"-\\"+randDigits(4,4)","mobile_phone":"\\"(\\"+randDigits(3,3)+\\")\\"+randDigits(3,3)+\\"-\\"+randDigits(4,4)","work_phone":"\\"(\\"+randDigits(3,3)+\\")\\"+randDigits(3,3)+\\"-\\"+randDigits(4,4)","index":"randInt(1,100)","jenkins_build":"${BUILD_NUMBER}" ,"dob":"datetime(dateOfBirth(18, 100,now()),\\"MM/DD/YYYY\\")","address":"valueFromSeedlist(\\"usaddress-multicol\\", \${index}, 1)","city":"valueFromSeedlist(\\"usaddress-multicol\\", \${index}, 2) ","state":"valueFromSeedlist(\\"usaddress-multicol\\", \${index}, 3) ","zip_code":"valueFromSeedlist(\\"usaddress-multicol\\", \${index}, 4)"},"repeat":"5"}}}"""
+//	    def dmresponse = httpRequest authentication: 'BMCredentials', contentType: 'APPLICATION_JSON', httpMode: 'PUT', requestBody: datamodel , url: "https://a.blazemeter.com/api/v4/tests/"+BMfunctest
  	    
-	    echo "Start Blazemeter Functional Test Suite"
-		   
-	     def response = httpRequest authentication: 'BMCredentials', contentType: 'APPLICATION_JSON', httpMode: 'POST', url: "https://a.blazemeter.com/api/v4/multi-tests/"+BMfuncsuitetest+"/start"
-             def json = new JsonSlurper().parseText(response.content)
-             testmasterid = json.result.id
-	   }
-	    script {
-            while (true) {
-	    sleep 120
+//	    echo "Start Blazemeter Functional Test Suite"
+//		   
+//	     def response = httpRequest authentication: 'BMCredentials', contentType: 'APPLICATION_JSON', httpMode: 'POST', url: "https://a.blazemeter.com/api/v4/multi-tests/"+BMfuncsuitetest+"/start"
+  //           def json = new JsonSlurper().parseText(response.content)
+//             testmasterid = json.result.id
+//	   }
+//	    script {
+  //          while (true) {
+//	    sleep 120
 	    // Check Status of Test    
-	    def response = httpRequest authentication: 'BMCredentials', acceptType: 'APPLICATION_JSON_UTF8', contentType: 'APPLICATION_JSON', httpMode: 'GET', url: "https://a.blazemeter.com:443/api/v4/masters/"+testmasterid+"/test-suite-summary"
-	    def json = new JsonSlurper().parseText(response.content)
-            endtime = json.result.suiteSummary.ended
-	    echo "End Time = " + endtime
-            if ( endtime > 0 ) break
-            }
-	    def suiteresponse = httpRequest authentication: 'BMCredentials', acceptType: 'APPLICATION_JSON_UTF8', contentType: 'APPLICATION_JSON', httpMode: 'GET', url: "https://a.blazemeter.com:443/api/v4/masters/"+testmasterid+"/full?external=false"
-	    def suitejson = new JsonSlurper().parseText(suiteresponse.content)
-            projectID = suitejson.result.projectId
-            testresult = suitejson.result.passed
-            if (testresult == true ) {
-                echo 'Test Passed'
-		echo "Test details : https://a.blazemeter.com/app/#/accounts/"+account+"/workspaces/"+workspaceID+"/projects/"+projectID"+/masters/"+testmasterid+"/suite-report"
-		testresult = "Blazemeter Test Suite Passed"
-            } else {
-                echo 'Test Failed '
-		echo "Test details : https://a.blazemeter.com/app/#/accounts/"+account+"/workspaces/"+workspaceID+"/projects/"+projectID+"/masters/"+testmasterid+"/suite-report"
-		testresult = "Blazemeter Test Suite Failed"
-            }  
-           }  
+//	    def response = httpRequest authentication: 'BMCredentials', acceptType: 'APPLICATION_JSON_UTF8', contentType: 'APPLICATION_JSON', httpMode: 'GET', url: "https://a.blazemeter.com:443/api/v4/masters/"+testmasterid+"/test-suite-summary"
+//	    def json = new JsonSlurper().parseText(response.content)
+  //          endtime = json.result.suiteSummary.ended
+//	    echo "End Time = " + endtime
+//            if ( endtime > 0 ) break
+ //           }
+//	    def suiteresponse = httpRequest authentication: 'BMCredentials', acceptType: 'APPLICATION_JSON_UTF8', contentType: 'APPLICATION_JSON', httpMode: 'GET', url: "https://a.blazemeter.com:443/api/v4/masters/"+testmasterid+"/full?external=false"
+//	    def suitejson = new JsonSlurper().parseText(suiteresponse.content)
+//            projectID = suitejson.result.projectId
+//            testresult = suitejson.result.passed
+//            if (testresult == true ) {
+//                echo 'Test Passed'
+//		echo "Test details : https://a.blazemeter.com/app/#/accounts/"+account+"/workspaces/"+workspaceID+"/projects/"+projectID"+/masters/"+testmasterid+"/suite-report"
+//		testresult = "Blazemeter Test Suite Passed"
+//            } else {
+//                echo 'Test Failed '
+//		echo "Test details : https://a.blazemeter.com/app/#/accounts/"+account+"/workspaces/"+workspaceID+"/projects/"+projectID+"/masters/"+testmasterid+"/suite-report"
+//		testresult = "Blazemeter Test Suite Failed"
+//            }  
+//           }  
 
            script {
             // Define Variable
