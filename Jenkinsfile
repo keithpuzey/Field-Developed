@@ -59,7 +59,7 @@ pipeline {
 	   echo "Deploy Digital Bank Build" + BUILD_NUMBER + "  to Test Environment"
 	   sleep 5
            echo "Configuring Digital Banking application with mock service details"
-           script {
+//           script {
 	// Start Blazemeter  Performance Test
 //	    echo "Start Blazemeter Performance Test "
 //		   
