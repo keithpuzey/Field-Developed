@@ -175,8 +175,8 @@ a.border-button:hover {
 
 .sub-header {
 	background-color: #a4c639;
-	height: 46px;
-	line-height: 46px;
+	height: 65px;
+	line-height: 65px;
 }
 
 .sub-header ul li {
@@ -209,7 +209,7 @@ a.border-button:hover {
 
 .sub-header ul.right-icons li {
 	margin-right: -4px;
-	width: 46px;
+	width: 55px;
 	display: inline-block;
 	text-align: center;
 	border-right: 1px solid rgba(250,250,250,0.3);
