@@ -25,7 +25,7 @@ pipeline {
             sh "sed  -i 's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-update-topmenu/index.html"
 	    sh "sed  -i 's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-update-topmenu/contact.html"
 	    sh "sed  -i 's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-update-topmenu/about.html"
-	    sh "sed  -i 's/BUILD_NUMBER/${BUILD_NUMBER}/g' /home/perfecto-test.sh"
+	    sh "sed  -i 's/BUILD_NUMBER/${BUILD_NUMBER}/g' /home/perfecto/perfecto-test.sh"
   	    sshagent(['website']) {
                  // some block
                  sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'whoami'"
