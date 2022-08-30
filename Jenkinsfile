@@ -25,7 +25,7 @@ pipeline {
             sh "sed  -i 's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-update-demo/index.html"
 	    sh "sed  -i 's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-update-demo/contact.html"
 	    sh "sed  -i 's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-update-demo/about.html"
-	    sh "'/bin/cp -r /home/perfecto/perfecto-test-backup.sh /home/perfecto/perfecto-test.sh'"
+	    sh "/bin/cp -r /home/perfecto/perfecto-test-backup.sh /home/perfecto/perfecto-test.sh"
 	    sh "sed  -i 's/BUILD_NUMBER/${BUILD_NUMBER}/g' /home/perfecto/perfecto-test.sh"
   	    sshagent(['website']) {
                  // some block
