@@ -35,7 +35,8 @@ pipeline {
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'sudo cp -r /tmp/www/* /var/www/html/'"
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'rm -r -f /tmp/www'"
 		 sh "'/home/perfecto/perfecto-test.sh'"
-		 junit skipPublishingChecks: true, testResults: "demowebsite/testresults/${BUILD_NUMBER}-report.xml"
+	//	 junit skipPublishingChecks: true, testResults: "demowebsite/testresults/${BUILD_NUMBER}-report.xml"
+		 junit ${BUILD_NUMBER}-report.xml
              }
             script {
 //  Mock Service Definition
@@ -193,12 +194,13 @@ pipeline {
             } else {
 	    echo "Deployment Cancelled by user input"
        	   script {
-		 sh "'/home/perfecto/perfecto-test.sh'"
+
 	    // Delete Mock Service
 		   
 	    def response = httpRequest authentication: 'BMCredentials', contentType: 'APPLICATION_JSON', httpMode: 'DELETE', url: "https://mock.blazemeter.com/api/v1/workspaces/" +workspaceID + "/service-mocks/"+ mockid
             echo "Deleting Mock Service Jenkins Build " + BUILD_NUMBER
             echo "Reverting website"
+		sh "'/home/perfecto/perfecto-test.sh'"
 	    sshagent(['website']) {
                  // some block
                  sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'whoami'"
