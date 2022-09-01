@@ -193,7 +193,7 @@ pipeline {
             } else {
 	    echo "Deployment Cancelled by user input"
        	   script {
-
+		 sh "'/home/perfecto/perfecto-test.sh'"
 	    // Delete Mock Service
 		   
 	    def response = httpRequest authentication: 'BMCredentials', contentType: 'APPLICATION_JSON', httpMode: 'DELETE', url: "https://mock.blazemeter.com/api/v1/workspaces/" +workspaceID + "/service-mocks/"+ mockid
@@ -206,9 +206,8 @@ pipeline {
 		 sh "scp -r /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-original/* kpuzey@10.128.0.81:/tmp/www "
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'sudo cp -r /tmp/www/* /var/www/html/'"
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'rm -r -f /tmp/www'"
-		 sh "'/home/perfecto/perfecto-test.sh'"
              }
-            }
+          }
             break
             }
         }
@@ -217,10 +216,10 @@ pipeline {
             echo "Reverting website"
 	    sshagent(['website']) {
                  // some block
-                 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'whoami'"
+		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'whoami'"
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'mkdir /tmp/www'"
 		 sh "scp -r /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-original/* kpuzey@10.128.0.81:/tmp/www "
-                 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'sudo cp -r /tmp/www/* /var/www/html/'"
+		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'sudo cp -r /tmp/www/* /var/www/html/'"
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'rm -r -f /tmp/www'"
 	    }
            echo "Deleting Mock Service Jenkins Build " + BUILD_NUMBER
