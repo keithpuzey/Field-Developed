@@ -75,7 +75,7 @@ pipeline {
        echo "Mock Service Jenkins Build " + BUILD_NUMBER + "  Started -  Endpoint details " + mockendpoint
 	   echo "Deploy Digital Bank Build" + BUILD_NUMBER + "  to Test Environment"
 	   sleep 5
- //          echo "Configuring Digital Banking application with mock service details"
+       echo "Configuring Digital Banking application with mock service details"
 //           script {
 	// Start Blazemeter  Performance Test
 //	    echo "Start Blazemeter Performance Test "
@@ -200,14 +200,13 @@ pipeline {
 	    def response = httpRequest authentication: 'BMCredentials', contentType: 'APPLICATION_JSON', httpMode: 'DELETE', url: "https://mock.blazemeter.com/api/v1/workspaces/" +workspaceID + "/service-mocks/"+ mockid
             echo "Deleting Mock Service Jenkins Build " + BUILD_NUMBER
             echo "Reverting website"
-		sh "'/home/perfecto/perfecto-test.sh'"
 	    sshagent(['website']) {
                  // some block
-                 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'whoami'"
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'mkdir /tmp/www'"
 		 sh "scp -r /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-original/* kpuzey@10.128.0.81:/tmp/www "
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'sudo cp -r /tmp/www/* /var/www/html/'"
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'rm -r -f /tmp/www'"
+		 sh "'/home/perfecto/perfecto-test.sh'"
              }
           }
             break
@@ -223,6 +222,7 @@ pipeline {
 		 sh "scp -r /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-original/* kpuzey@10.128.0.81:/tmp/www "
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'sudo cp -r /tmp/www/* /var/www/html/'"
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'rm -r -f /tmp/www'"
+		 sh "'/home/perfecto/perfecto-test.sh'"
 	    }
            echo "Deleting Mock Service Jenkins Build " + BUILD_NUMBER
             }
