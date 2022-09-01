@@ -36,7 +36,7 @@ pipeline {
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'rm -r -f /tmp/www'"
 		 sh "'/home/perfecto/perfecto-test.sh'"
 	//	 junit skipPublishingChecks: true, testResults: "demowebsite/testresults/${BUILD_NUMBER}-report.xml"
-		 junit ${BUILD_NUMBER}-report.xml
+		 junit "${BUILD_NUMBER}-report.xml"
              }
             script {
 //  Mock Service Definition
