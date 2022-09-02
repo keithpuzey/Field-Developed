@@ -175,8 +175,8 @@ a.border-button:hover {
 
 .sub-header {
 	background-color: #a4c639;
-	height: 46px;
-	line-height: 46px;
+	height: 55px;
+	line-height: 55px;
 }
 
 .sub-header ul li {
@@ -199,7 +199,7 @@ a.border-button:hover {
 
 .sub-header ul.left-info li a {
 	color: #fff;
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: 600;
 }
 
