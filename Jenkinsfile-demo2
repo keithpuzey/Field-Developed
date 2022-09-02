@@ -22,16 +22,16 @@ pipeline {
          steps {
         echo 'Extract Build to Develpoment Environment'
         echo 'Prepare Environment - Create Mock Services'
-        sh "sed  -i 's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-original-demo2/index.html"
-	    sh "sed  -i 's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-original-demo2/contact.html"
-	    sh "sed  -i 's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-original-demo2/about.html"
+        sh "sed  -i 's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite_v2/demowebsite/finance-original-demo2/index.html"
+	    sh "sed  -i 's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite_v2/demowebsite/finance-original-demo2/contact.html"
+	    sh "sed  -i 's/BUILDNUMBER/${BUILD_NUMBER}/g' /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite_v2/demowebsite/finance-original-demo2/about.html"
 	    sh "/bin/cp -r /home/perfecto/perfecto-test-backup-demo2.sh /home/perfecto/perfecto-test.sh"
 	    sh "sed  -i 's/BUILD_NUMBER/${BUILD_NUMBER}/g' /home/perfecto/perfecto-test.sh"
 		
   	    sshagent(['website']) {
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'whoami'"
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'mkdir /tmp/www'"
-		 sh "scp -r /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-original-demo2/* kpuzey@10.128.0.81:/tmp/www "
+		 sh "scp -r /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite_v2/demowebsite/finance-original-demo2/* kpuzey@10.128.0.81:/tmp/www "
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'sudo cp -r /tmp/www/* /var/www/html/'"
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'rm -r -f /tmp/www'"
 		 sh "'/home/perfecto/perfecto-test.sh'"
@@ -203,7 +203,7 @@ pipeline {
 	    sshagent(['website']) {
                  // some block
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'mkdir /tmp/www'"
-		 sh "scp -r /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-original/* kpuzey@10.128.0.81:/tmp/www "
+		 sh "scp -r /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite_v2/demowebsite/finance-original/* kpuzey@10.128.0.81:/tmp/www "
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'sudo cp -r /tmp/www/* /var/www/html/'"
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'rm -r -f /tmp/www'"
 		 sh "'/home/perfecto/perfecto-test.sh'"
@@ -218,7 +218,7 @@ pipeline {
 	    sshagent(['website']) {
 
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'mkdir /tmp/www'"
-		 sh "scp -r /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite/demowebsite/finance-original/* kpuzey@10.128.0.81:/tmp/www "
+		 sh "scp -r /var/jenkins_home/workspace/Digital_Bank_Demo_WebSite_v2/demowebsite/finance-original/* kpuzey@10.128.0.81:/tmp/www "
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'sudo cp -r /tmp/www/* /var/www/html/'"
 		 sh "ssh -o StrictHostKeyChecking=no -l kpuzey 10.128.0.81 'rm -r -f /tmp/www'"
 		 sh "'/home/perfecto/perfecto-test.sh'"
