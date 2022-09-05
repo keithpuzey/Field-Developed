@@ -9,6 +9,7 @@ https://templatemo.com/tm-545-finance-business
 body {
   font-family: 'Poppins', sans-serif;
   overflow-x: hidden;
+  @cache-version: `( new Date() ).getTime()` ;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -387,15 +388,15 @@ header .navbar {
 }
 
 .Modern-Slider .item-1 .img-fill {
-	background-image: url(../images/slide_01.jpg);
+	background-image: url(../images/slide_01.jpg?version=@{cache-version});
 }
 
 .Modern-Slider .item-2 .img-fill {
-	background-image: url(../images/slide_02.jpg);
+	background-image: url(../images/slide_02.jpg?version=@{cache-version});
 }
 
 .Modern-Slider .item-3 .img-fill {
-	background-image: url(../images/slide_03.jpg);
+	background-image: url(../images/slide_03?version=@{cache-version}.jpg);
 }
 
 .Modern-Slider .NextArrow{
