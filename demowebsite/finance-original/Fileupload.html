@@ -103,18 +103,13 @@ https://templatemo.com/tm-545-finance-business
             <div class="img-fill">
                 <div class="text-content">
                   <h6>File Upload</h6>
-                  <p>    <form action="/action_page.php" 
-        enctype="multipart/form-data">
-  
-        <label for="myfile">Select a file:</label>
-  
-        <input type="file" id="myfile" 
-            name="myfile" multiple="multiple" />
-          
-        <br /><br />
-      
-        <input type="submit" />
-    </form></p>
+                  <p>   	<form target="uploadfiles.php" method="post" enctype="multipart/form-data">
+		<!--Content will go inside here.-->
+		<input name="file1" type="file">
+		<input type="submit" value="Upload Now">
+	</form>
+	
+	</p>
                   
                 </div>
             </div>
