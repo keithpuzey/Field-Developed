@@ -1,0 +1,31 @@
+
+
+execution:
+  - scenario: default-scenario
+    hold-for: 3m
+    ramp-up: 1m
+    concurrency: 2
+    locations:
+      us-east4-a: 5
+    steps: 0
+
+scenarios:
+  default-scenario:
+    requests:
+      - url: https://www.google.com
+        method: GET
+        label: google
+      - url: https://www.google.com
+        method: GET
+        label: google2
+    retrieve-resources: false
+    
+    data-sources: # list of external data sources
+    - path/to/my.csv  # this is a shorthand form
+    - path: path/to/another.csv  # this is a full form
+      delimiter: ','
+      quoted: false
+      encoding: "utf-8"
+      loop: true
+      variable-names: id,name
+      random-order: false
