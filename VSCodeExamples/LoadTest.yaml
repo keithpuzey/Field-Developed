@@ -1,0 +1,21 @@
+
+
+execution:
+  - scenario: default-scenario
+    hold-for: 3m
+    ramp-up: 1m
+    concurrency: 2
+    locations:
+      us-east4-a: 5
+    steps: 0
+
+scenarios:
+  default-scenario:
+    requests:
+      - url: https://www.google.com
+        method: GET
+        label: google
+      - url: https://www.google.com
+        method: GET
+        label: google2
+    retrieve-resources: false
