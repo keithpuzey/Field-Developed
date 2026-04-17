@@ -1,0 +1,31 @@
+{
+  "id": "8E3F06C7-B0A2-4EB0-B538-51CBD3BD68E9",
+  "name": "TriggerAndMonitorTests",
+  "friendlyName": "Trigger and Monitor Perfecto Tests",
+  "description": "Triggers tests and monitors execution",
+  "author": "Keith Puzey",
+  "helpMarkDown": "Triggers tests via API and waits for completion",
+  "category": "Utility",
+  "visibility": ["Build", "Release"],
+  "runsOn": ["Agent"],
+    "instanceNameFormat": "Trigger Perfecto Test $(testId)",
+  "inputs": [
+    {
+      "name": "apiToken",
+      "type": "string",
+      "label": "API Token",
+      "required": true
+    },
+    {
+      "name": "testId",
+      "type": "string",
+      "label": "Test ID",
+      "required": true
+    }
+  ],
+  "execution": {
+    "PowerShell3": {
+      "target": "run_perfecto.ps1"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "manifestVersion": 1,
+  "id": "trigger-tests-extension-v2-2",
+  "name": "Trigger Perfecto Tests Extension",
+  "version": "2.0.2",
+  "categories": ["Azure Pipelines"],
+  "publisher": "keithpuzeyperforce",
+  "files": [
+  {
+    "path": "Perfecto-Test-Run-Task"
+  }
+  ],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "trigger-tests-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "Perfecto-Test-Run-Task"
+      }
+    }
+  ]
+}
