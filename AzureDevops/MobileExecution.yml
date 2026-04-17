@@ -1,0 +1,30 @@
+
+trigger:
+- main
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+# Step 1: Force a fresh checkout of your code
+- checkout: self
+  displayName: 'Checkout Code'
+
+# Step 2: Run the Perfecto Mobile Tests 
+- task: PowerShell@2
+  displayName: 'Execute Multiple Perfecto Tests from CSV'
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Pass the CSV path to your script
+      & "$(System.DefaultWorkingDirectory)\run_perfecto.ps1" -CsvPath "$(System.DefaultWorkingDirectory)\perfectotests.csv"
+  env:
+    PERFECTO_TOKEN: $(PERFECTO_TOKEN)
+
+# Step 3: Publish Perfecto Mobile Test Results
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/test-results/*-result.xml' 
+    testRunTitle: 'Perfecto Batch Execution'
